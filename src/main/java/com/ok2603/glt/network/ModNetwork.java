@@ -30,6 +30,7 @@ public class ModNetwork {
                     Entity entity = context.player().level().getEntity(payload.entityId());
                     if (entity instanceof Player player) {
                         player.setData(ModAttachments.ROLE, payload.role());
+                        player.refreshDisplayName();
                     }
                 }));
 

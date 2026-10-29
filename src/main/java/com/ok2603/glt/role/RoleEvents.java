@@ -1,6 +1,7 @@
 package com.ok2603.glt.role;
 
 import com.ok2603.glt.GLTMod;
+import com.ok2603.glt.config.GLTConfig;
 import com.ok2603.glt.network.RoleSyncPayload;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,8 +18,18 @@ public class RoleEvents {
     @SubscribeEvent
     public static void onLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
+            if (Roles.get(player) == Role.NONE && GLTConfig.get(GLTConfig.AUTO_ROLES)) {
+                Role role = Roles.pickAutomaticRole(player);
+                if (role != Role.NONE) {
+                    Roles.set(player, role);
+                    player.sendSystemMessage(Component.translatable("message.glt.role.assigned",
+                            Component.translatable("role.glt." + role.getSerializedName())));
+                }
+            }
             Roles.sync(player);
             Roles.applyAttributes(player);
+            player.refreshDisplayName();
+            player.refreshTabListName();
             if (Roles.get(player) == Role.NONE) {
                 player.sendSystemMessage(Component.translatable("message.glt.role.hint"));
             }
@@ -46,6 +57,32 @@ public class RoleEvents {
         if (event.getTarget() instanceof Player target && event.getEntity() instanceof ServerPlayer viewer) {
             PacketDistributor.sendToPlayer(viewer, new RoleSyncPayload(target.getId(), Roles.get(target)));
         }
+    }
+
+    /** Show players as "Chito" or "Yuuri" in chat and above their heads. */
+    @SubscribeEvent
+    public static void onNameFormat(PlayerEvent.NameFormat event) {
+        Component name = characterName(event.getEntity());
+        if (name != null) {
+            event.setDisplayname(name);
+        }
+    }
+
+    /** ...and in the player list (Tab). */
+    @SubscribeEvent
+    public static void onTabListName(PlayerEvent.TabListNameFormat event) {
+        Component name = characterName(event.getEntity());
+        if (name != null) {
+            event.setDisplayName(name);
+        }
+    }
+
+    private static Component characterName(Player player) {
+        Role role = Roles.get(player);
+        if (role == Role.NONE || !GLTConfig.get(GLTConfig.CHARACTER_NAMES)) {
+            return null;
+        }
+        return Component.translatable("role.glt." + role.getSerializedName());
     }
 
     @SubscribeEvent

@@ -1,6 +1,7 @@
 package com.ok2603.glt.cold;
 
 import com.ok2603.glt.GLTMod;
+import com.ok2603.glt.config.GLTConfig;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.level.Level;
@@ -17,6 +18,7 @@ import java.util.Set;
  * Hostile mobs never appear on their own in the Overworld: no zombies at night,
  * no creepers, phantoms, patrols, raids or structure mobs.
  * Spawn eggs, commands and monster spawners still work, so you can add them on purpose.
+ * Can be turned off with "noMonsters" in the config.
  * The Nether and the End are left alone, so you can still beat the game.
  */
 @EventBusSubscriber(modid = GLTMod.MODID)
@@ -36,7 +38,8 @@ public class NoMonsters {
     public static void onMobSpawn(FinalizeSpawnEvent event) {
         if (event.getEntity() instanceof Enemy
                 && NATURAL_SPAWNS.contains(event.getSpawnType())
-                && event.getEntity().level().dimension() == Level.OVERWORLD) {
+                && event.getEntity().level().dimension() == Level.OVERWORLD
+                && GLTConfig.get(GLTConfig.NO_MONSTERS)) {
             event.setSpawnCancelled(true);
         }
     }

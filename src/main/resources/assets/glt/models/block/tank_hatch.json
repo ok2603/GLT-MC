@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "glt:block/tank_hatch",
+    "bottom": "glt:block/rusted_plate",
+    "side": "glt:block/rusted_plate"
+  }
+}

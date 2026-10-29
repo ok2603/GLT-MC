@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#glt:has_ruins",
+  "features": "glt:wrecked_tank",
+  "step": "surface_structures"
+}

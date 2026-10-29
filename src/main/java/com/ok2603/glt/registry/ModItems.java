@@ -1,9 +1,15 @@
 package com.ok2603.glt.registry;
 
 import com.ok2603.glt.GLTMod;
+import com.ok2603.glt.item.BeerItem;
 import com.ok2603.glt.item.KettenkradItem;
+import com.ok2603.glt.item.OldNoteItem;
 import com.ok2603.glt.item.WarmFoodItem;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -39,6 +45,14 @@ public class ModItems {
             new Item.Properties().stacksTo(16).food(new FoodProperties.Builder()
                     .nutrition(5).saturationModifier(0.9f).build()));
 
+    /** Beer from the old world. Rare. Warms you a little and makes the world sway. */
+    public static final DeferredItem<BeerItem> BEER = ITEMS.registerItem("beer",
+            BeerItem::new,
+            new Item.Properties().stacksTo(16).food(new FoodProperties.Builder()
+                    .nutrition(1).saturationModifier(0.1f).alwaysEdible()
+                    .effect(new MobEffectInstance(MobEffects.CONFUSION, 20 * 12), 1.0f)
+                    .usingConvertsTo(Items.GLASS_BOTTLE).build()));
+
     // --- Supplies ---
 
     /** Fuel for the Kettenkrad. */
@@ -48,6 +62,23 @@ public class ModItems {
     /** Chito's journal. For now a plain item; later it will open a writable book. */
     public static final DeferredItem<Item> CHITOS_JOURNAL = ITEMS.registerSimpleItem("chitos_journal",
             new Item.Properties().stacksTo(1));
+
+    /** Bits of old machines. Used to repair the Kettenkrad and to build things. */
+    public static final DeferredItem<Item> SCRAP_PARTS = ITEMS.registerSimpleItem("scrap_parts",
+            new Item.Properties());
+
+    /** A note from the old world. Only Chito can read it. */
+    public static final DeferredItem<OldNoteItem> OLD_NOTE = ITEMS.registerItem("old_note",
+            OldNoteItem::new, new Item.Properties().stacksTo(1));
+
+    // --- Blocks found in ruins ---
+
+    public static final DeferredItem<BlockItem> SUPPLY_CRATE = ITEMS.register("supply_crate",
+            () -> new BlockItem(ModBlocks.SUPPLY_CRATE.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> TANK_HATCH = ITEMS.register("tank_hatch",
+            () -> new BlockItem(ModBlocks.TANK_HATCH.get(), new Item.Properties()));
+    public static final DeferredItem<BlockItem> RUSTED_PLATE = ITEMS.register("rusted_plate",
+            () -> new BlockItem(ModBlocks.RUSTED_PLATE.get(), new Item.Properties()));
 
     // --- Vehicles ---
 
