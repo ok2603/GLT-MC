@@ -96,6 +96,12 @@ public class ModItems {
 
     public static final DeferredItem<DeferredSpawnEggItem> NUKO_SPAWN_EGG = ITEMS.register("nuko_spawn_egg",
             () -> new DeferredSpawnEggItem(ModEntities.NUKO, 0xF4F1EA, 0x2B2B2B, new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> KANAZAWA_SPAWN_EGG = ITEMS.register("kanazawa_spawn_egg",
+            () -> new DeferredSpawnEggItem(ModEntities.KANAZAWA, 0x2F3B30, 0xD8D2C0, new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> ISHII_SPAWN_EGG = ITEMS.register("ishii_spawn_egg",
+            () -> new DeferredSpawnEggItem(ModEntities.ISHII, 0x8A5A32, 0x3A3A3A, new Item.Properties()));
+    public static final DeferredItem<DeferredSpawnEggItem> ROBOT_SPAWN_EGG = ITEMS.register("robot_spawn_egg",
+            () -> new DeferredSpawnEggItem(ModEntities.ROBOT, 0x7B8086, 0xE0B040, new Item.Properties()));
 
     // --- Blocks found in ruins ---
 

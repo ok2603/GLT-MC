@@ -23,7 +23,7 @@ public final class CityLayout {
     public static final int WORLD_HEIGHT = 512;
 
     public enum Lot {
-        BUILDING, RUIN, PLAZA, PIPES, HOLE, TANKS, TEMPLE, FACTORY, STAIRS, ELEVATOR, FISH_FARM, SUMMIT
+        BUILDING, RUIN, PLAZA, PIPES, HOLE, TANKS, TEMPLE, FACTORY, STAIRS, ELEVATOR, FISH_FARM, AIRFIELD, SUMMIT
     }
 
     private final long seed;
@@ -99,8 +99,9 @@ public final class CityLayout {
         double temple = 0.035;
         double factory = 0.03;
         double fishFarm = floor <= 3 ? 0.02 : 0.0;
-        double[] weights = {building, ruin, plaza, pipes, hole, tanks, temple, factory, fishFarm};
-        Lot[] lots = {Lot.BUILDING, Lot.RUIN, Lot.PLAZA, Lot.PIPES, Lot.HOLE, Lot.TANKS, Lot.TEMPLE, Lot.FACTORY, Lot.FISH_FARM};
+        double airfield = floor >= 3 && floor <= 6 ? 0.012 : 0.0;
+        double[] weights = {building, ruin, plaza, pipes, hole, tanks, temple, factory, fishFarm, airfield};
+        Lot[] lots = {Lot.BUILDING, Lot.RUIN, Lot.PLAZA, Lot.PIPES, Lot.HOLE, Lot.TANKS, Lot.TEMPLE, Lot.FACTORY, Lot.FISH_FARM, Lot.AIRFIELD};
         double total = 0;
         for (double w : weights) {
             total += w;

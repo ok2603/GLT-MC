@@ -9,6 +9,7 @@ import com.ok2603.glt.block.OldSignBlock;
 import com.ok2603.glt.block.StatueBlock;
 import com.ok2603.glt.city.CityLayout.Lot;
 import com.ok2603.glt.registry.ModBlocks;
+import com.ok2603.glt.registry.ModEntities;
 import com.ok2603.glt.registry.ModFeatures;
 import com.ok2603.glt.registry.ModLootTables;
 import net.minecraft.core.BlockPos;
@@ -16,6 +17,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.animal.Cod;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
@@ -31,6 +33,8 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.storage.loot.LootTable;
+
+import java.util.function.Consumer;
 
 /**
  * Builds the Last City, one chunk at a time, following the plan in CityLayout.
@@ -156,7 +160,7 @@ public class CityFeature extends Feature<NoneFeatureConfiguration> {
     private static BlockState lotSurface(Chunk c, Lot lot, int lx, int y, int lz) {
         double n = c.noise(lx, y, lz, 5);
         return switch (lot) {
-            case PLAZA, ELEVATOR, SUMMIT -> n < 0.1 ? Blocks.ANDESITE.defaultBlockState() : Blocks.POLISHED_ANDESITE.defaultBlockState();
+            case PLAZA, ELEVATOR, SUMMIT, AIRFIELD -> n < 0.1 ? Blocks.ANDESITE.defaultBlockState() : Blocks.POLISHED_ANDESITE.defaultBlockState();
             case TEMPLE -> n < 0.2 ? Blocks.MOSSY_STONE_BRICKS.defaultBlockState() : Blocks.STONE_BRICKS.defaultBlockState();
             case FACTORY, TANKS -> n < 0.15 ? Blocks.GRAVEL.defaultBlockState() : Blocks.GRAY_CONCRETE.defaultBlockState();
             default -> n < 0.1 ? Blocks.CRACKED_STONE_BRICKS.defaultBlockState() : Blocks.STONE_BRICKS.defaultBlockState();
@@ -204,6 +208,7 @@ public class CityFeature extends Feature<NoneFeatureConfiguration> {
             case FISH_FARM -> buildFishFarm(c, floor);
             case ELEVATOR -> buildElevator(c, floor);
             case STAIRS -> buildStairTower(c, floor);
+            case AIRFIELD -> buildAirfield(c, floor);
             case SUMMIT -> buildSummit(c, floor);
             case HOLE -> { }
         }
@@ -334,6 +339,9 @@ public class CityFeature extends Feature<NoneFeatureConfiguration> {
         c.crate(maxX - 1, y0, maxZ - 1, ModLootTables.SUPPLY_CACHE);
         c.crate(maxX - 1, y0, minZ + 1, ModLootTables.SUPPLY_CACHE);
         c.sign(minX, y0 + 4, doorZ + 1, Direction.WEST, floor);
+        if (c.isFarQuarter()) {
+            c.spawn(ModEntities.ROBOT.get(), 22, y0, 24, robot -> robot.setHome(robot.blockPosition(), false));
+        }
     }
 
     /** An open square: maybe a statue, a cairn, benches. */
@@ -352,6 +360,10 @@ public class CityFeature extends Feature<NoneFeatureConfiguration> {
             c.set(18, y0 + 1, 18, ModBlocks.STATUE.get().defaultBlockState().setValue(StatueBlock.FACING, Direction.NORTH));
         } else if (roll < 0.4) {
             c.set(12, y0, 26, ModBlocks.CAIRN.get().defaultBlockState());
+        }
+        // Now and then, a traveler resting here: Kanazawa, the mapmaker.
+        if (floor >= 1 && c.isFarQuarter() && c.layout.random01(floor, c.cx, c.cz, 46) < 0.08) {
+            c.spawn(ModEntities.KANAZAWA.get(), 22, y0, 24, null);
         }
         // Benches along one side.
         for (int lx = 10; lx <= 26; lx += 4) {
@@ -384,6 +396,9 @@ public class CityFeature extends Feature<NoneFeatureConfiguration> {
                     c.set(26 + a, y, 8 + b, standing);
                 }
             }
+        }
+        if (c.isFarQuarter() && c.layout.random01(floor, c.cx, c.cz, 47) < 0.3) {
+            c.spawn(ModEntities.ROBOT.get(), 20, y0, 24, robot -> robot.setHome(robot.blockPosition(), false));
         }
         if (hot) {
             // A crack in a hot pipe, and the warm pool it fills: a bath.
@@ -463,8 +478,10 @@ public class CityFeature extends Feature<NoneFeatureConfiguration> {
         c.sign(17, y0 + 2, minZ, Direction.NORTH, floor);
         if (c.isFarQuarter()) {
             for (int i = 0; i < 6; i++) {
-                c.fish(14 + (i % 3) * 4, y0 - 1, 14 + (i / 3) * 6);
+                c.fish(18 + (i % 3) * 3, y0 - 1, 18 + (i / 3) * 4);
             }
+            BlockPos pool = new BlockPos(c.worldX(20), y0 - 1, c.worldZ(20));
+            c.spawn(ModEntities.ROBOT.get(), 28, y0, 24, robot -> robot.setHome(pool, true));
         }
     }
 
@@ -595,6 +612,39 @@ public class CityFeature extends Feature<NoneFeatureConfiguration> {
         }
         c.sign(max, y0 + 3, 23, Direction.EAST, floor);
         c.lamp(31, y0, 28);
+    }
+
+    /** A flat runway with a little workshop, where Ishii is building her plane. */
+    private static void buildAirfield(Chunk c, int floor) {
+        int y0 = CityLayout.floorY(floor);
+        // Runway markings down the middle.
+        for (int lx = Math.max(CityLayout.ROAD_WIDTH, c.lx0); lx <= c.lx0 + 15; lx++) {
+            if (lx % 4 < 2) {
+                c.set(lx, y0 - 1, 18, Blocks.WHITE_CONCRETE.defaultBlockState());
+                c.set(lx, y0 - 1, 19, Blocks.WHITE_CONCRETE.defaultBlockState());
+            }
+        }
+        if (!c.isFarQuarter()) {
+            return;
+        }
+        // A lean-to workshop in the corner: two walls and a roof.
+        for (int lx = 24; lx <= 30; lx++) {
+            for (int lz = 24; lz <= 30; lz++) {
+                boolean wall = lx == 30 || lz == 30;
+                if (wall) {
+                    for (int dy = 0; dy < 4; dy++) {
+                        c.set(lx, y0 + dy, lz, ModBlocks.RUSTED_PLATE.get().defaultBlockState());
+                    }
+                }
+                c.set(lx, y0 + 4, lz, Blocks.SMOOTH_STONE_SLAB.defaultBlockState());
+            }
+        }
+        c.set(29, y0, 26, Blocks.ANVIL.defaultBlockState());
+        c.set(29, y0, 25, ModBlocks.PIPE.get().defaultBlockState());
+        c.crate(29, y0, 28, ModLootTables.SUPPLY_CACHE);
+        c.sign(27, y0 + 2, 30, Direction.NORTH, floor);
+        c.lamp(23, y0, 31);
+        c.spawn(ModEntities.ISHII.get(), 26, y0, 27, null);
     }
 
     /** The very top of the city: an empty square with one big black stone. */
@@ -766,6 +816,22 @@ public class CityFeature extends Feature<NoneFeatureConfiguration> {
                 cod.moveTo(worldX(lx) + 0.5, y + 0.2, worldZ(lz) + 0.5, random.nextFloat() * 360f, 0f);
                 cod.setFromBucket(true); // so they don't despawn
                 level.addFreshEntity(cod);
+            }
+        }
+
+        /** Adds a creature standing at this spot, and lets the caller set it up. */
+        <T extends Mob> void spawn(EntityType<T> type, int lx, int y, int lz, Consumer<T> setup) {
+            if (!contains(lx, lz)) {
+                return;
+            }
+            T mob = type.create(level.getLevel());
+            if (mob != null) {
+                mob.moveTo(worldX(lx) + 0.5, y, worldZ(lz) + 0.5, random.nextFloat() * 360f, 0f);
+                mob.setPersistenceRequired();
+                if (setup != null) {
+                    setup.accept(mob);
+                }
+                level.addFreshEntity(mob);
             }
         }
 
