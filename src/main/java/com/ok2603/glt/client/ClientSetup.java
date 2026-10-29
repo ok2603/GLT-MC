@@ -2,6 +2,8 @@ package com.ok2603.glt.client;
 
 import com.ok2603.glt.GLTMod;
 import com.ok2603.glt.registry.ModEntities;
+import com.ok2603.glt.registry.ModMenus;
+import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -50,6 +52,11 @@ public class ClientSetup {
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(KettenkradModel.LAYER, KettenkradModel::createBodyLayer);
         event.registerLayerDefinition(NukoModel.LAYER, NukoModel::createBodyLayer);
+    }
+
+    @SubscribeEvent
+    public static void registerScreens(RegisterMenuScreensEvent event) {
+        event.register(ModMenus.FOOD_FACTORY.get(), FoodFactoryScreen::new);
     }
 
     @SubscribeEvent

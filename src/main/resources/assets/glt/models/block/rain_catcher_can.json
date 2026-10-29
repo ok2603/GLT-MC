@@ -1,0 +1,79 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "glt:block/tin",
+    "tin": "glt:block/tin",
+    "label": "glt:block/can_label"
+  },
+  "elements": [
+    {
+      "from": [
+        5,
+        0,
+        5
+      ],
+      "to": [
+        11,
+        7,
+        11
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            6,
+            7
+          ],
+          "texture": "#label"
+        },
+        "south": {
+          "uv": [
+            6,
+            0,
+            12,
+            7
+          ],
+          "texture": "#label"
+        },
+        "east": {
+          "uv": [
+            0,
+            0,
+            6,
+            7
+          ],
+          "texture": "#label"
+        },
+        "west": {
+          "uv": [
+            6,
+            0,
+            12,
+            7
+          ],
+          "texture": "#label"
+        },
+        "up": {
+          "uv": [
+            5,
+            5,
+            11,
+            11
+          ],
+          "texture": "#tin"
+        },
+        "down": {
+          "uv": [
+            5,
+            5,
+            11,
+            11
+          ],
+          "texture": "#tin",
+          "cullface": "down"
+        }
+      }
+    }
+  ]
+}

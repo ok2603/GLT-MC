@@ -1,6 +1,8 @@
 package com.ok2603.glt.registry;
 
 import com.ok2603.glt.GLTMod;
+import com.ok2603.glt.worldgen.HotSpringFeature;
+import com.ok2603.glt.worldgen.ShrineFeature;
 import com.ok2603.glt.worldgen.SupplyCacheFeature;
 import com.ok2603.glt.worldgen.WreckedTankFeature;
 import net.minecraft.core.registries.Registries;
@@ -21,4 +23,10 @@ public class ModFeatures {
 
     public static final DeferredHolder<Feature<?>, SupplyCacheFeature> SUPPLY_CACHE =
             FEATURES.register("supply_cache", () -> new SupplyCacheFeature(NoneFeatureConfiguration.CODEC));
+
+    public static final DeferredHolder<Feature<?>, HotSpringFeature> HOT_SPRING =
+            FEATURES.register("hot_spring", () -> new HotSpringFeature(NoneFeatureConfiguration.CODEC));
+
+    public static final DeferredHolder<Feature<?>, ShrineFeature> SHRINE =
+            FEATURES.register("shrine", () -> new ShrineFeature(NoneFeatureConfiguration.CODEC));
 }

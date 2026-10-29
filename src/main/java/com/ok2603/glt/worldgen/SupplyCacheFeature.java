@@ -82,6 +82,15 @@ public class SupplyCacheFeature extends Feature<NoneFeatureConfiguration> {
         if (random.nextFloat() < 0.35f) {
             placeCrate(level, random, b.pos(-SIZE + 1, SIZE - 1, 0));
         }
+        // Sometimes a street lamp still stands outside the door.
+        if (random.nextFloat() < 0.3f) {
+            b.foundation(SIZE + 1, 1, floor, 4);
+            for (int up = 0; up < 3; up++) {
+                b.set(SIZE + 1, 1, up, ModBlocks.LAMP_POST.get().defaultBlockState());
+            }
+            b.set(SIZE + 1, 1, 3, ModBlocks.STREET_LAMP.get().defaultBlockState());
+            level.scheduleTick(b.pos(SIZE + 1, 1, 3), ModBlocks.STREET_LAMP.get(), 20);
+        }
         // An old candle left behind.
         if (random.nextFloat() < 0.5f) {
             b.set(-SIZE + 1, 0, 0, Blocks.CANDLE.defaultBlockState());

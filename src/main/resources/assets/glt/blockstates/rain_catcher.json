@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "kind=can": {
+      "model": "glt:block/rain_catcher_can"
+    },
+    "kind=bucket": {
+      "model": "glt:block/rain_catcher_bucket"
+    },
+    "kind=helmet": {
+      "model": "glt:block/rain_catcher_helmet"
+    }
+  }
+}

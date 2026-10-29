@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "glt:block/street_lamp_off"
+    },
+    "lit=true": {
+      "model": "glt:block/street_lamp_on"
+    }
+  }
+}

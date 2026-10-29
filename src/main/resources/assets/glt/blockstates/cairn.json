@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "stones=1": {
+      "model": "glt:block/cairn_1"
+    },
+    "stones=2": {
+      "model": "glt:block/cairn_2"
+    },
+    "stones=3": {
+      "model": "glt:block/cairn_3"
+    },
+    "stones=4": {
+      "model": "glt:block/cairn_4"
+    },
+    "stones=5": {
+      "model": "glt:block/cairn_5"
+    }
+  }
+}

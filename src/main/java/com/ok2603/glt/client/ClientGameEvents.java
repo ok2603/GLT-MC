@@ -3,6 +3,11 @@ package com.ok2603.glt.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.ok2603.glt.GLTMod;
 import com.ok2603.glt.network.SitPayload;
+import com.ok2603.glt.registry.ModItems;
+import com.ok2603.glt.survival.HotBath;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import com.ok2603.glt.role.Role;
 import com.ok2603.glt.role.Roles;
 import net.minecraft.client.Minecraft;
@@ -43,6 +48,16 @@ public class ClientGameEvents {
             if (mc.screen == null && mc.player != null) {
                 PacketDistributor.sendToServer(SitPayload.INSTANCE);
             }
+        }
+    }
+
+    /** A freshly washed coat says so in its tooltip. */
+    @SubscribeEvent
+    public static void onTooltip(ItemTooltipEvent event) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level != null && event.getItemStack().is(ModItems.CHITOS_COAT.get())
+                && HotBath.isFreshlyWashed(event.getItemStack(), mc.level)) {
+            event.getToolTip().add(Component.translatable("item.glt.chitos_coat.washed").withStyle(ChatFormatting.AQUA));
         }
     }
 

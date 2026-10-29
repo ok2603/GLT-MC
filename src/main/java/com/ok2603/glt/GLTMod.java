@@ -11,6 +11,7 @@ import com.ok2603.glt.registry.ModEntities;
 import com.ok2603.glt.registry.ModFeatures;
 import com.ok2603.glt.registry.ModItems;
 import com.ok2603.glt.registry.ModLootModifiers;
+import com.ok2603.glt.registry.ModMenus;
 import com.ok2603.glt.registry.ModSounds;
 import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
@@ -40,6 +41,7 @@ public class GLTMod {
         ModFeatures.FEATURES.register(modEventBus);
         ModEntities.ENTITY_TYPES.register(modEventBus);
         ModSounds.SOUNDS.register(modEventBus);
+        ModMenus.MENUS.register(modEventBus);
         ModCreativeTabs.CREATIVE_TABS.register(modEventBus);
 
         // Settings, saved per world in serverconfig/glt-server.toml.
