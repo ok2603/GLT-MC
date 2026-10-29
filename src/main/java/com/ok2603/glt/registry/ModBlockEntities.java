@@ -1,6 +1,7 @@
 package com.ok2603.glt.registry;
 
 import com.ok2603.glt.GLTMod;
+import com.ok2603.glt.block.ElevatorConsoleBlockEntity;
 import com.ok2603.glt.block.FoodFactoryBlockEntity;
 import com.ok2603.glt.block.LootContainerBlockEntity;
 import net.minecraft.core.registries.Registries;
@@ -22,4 +23,9 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FoodFactoryBlockEntity>> FOOD_FACTORY =
             BLOCK_ENTITIES.register("food_factory", () -> BlockEntityType.Builder.of(FoodFactoryBlockEntity::new,
                     ModBlocks.FOOD_FACTORY.get()).build(null));
+
+    @SuppressWarnings("DataFlowIssue")
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ElevatorConsoleBlockEntity>> ELEVATOR_CONSOLE =
+            BLOCK_ENTITIES.register("elevator_console", () -> BlockEntityType.Builder.of(ElevatorConsoleBlockEntity::new,
+                    ModBlocks.ELEVATOR_CONSOLE.get()).build(null));
 }

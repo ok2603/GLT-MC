@@ -3,6 +3,8 @@ package com.ok2603.glt.registry;
 import com.ok2603.glt.GLTMod;
 import com.ok2603.glt.block.BedrollBlock;
 import com.ok2603.glt.block.CairnBlock;
+import com.ok2603.glt.block.ElevatorConsoleBlock;
+import com.ok2603.glt.block.OldSignBlock;
 import com.ok2603.glt.block.FoodFactoryBlock;
 import com.ok2603.glt.block.LampPostBlock;
 import com.ok2603.glt.block.LeakingPipeBlock;
@@ -94,4 +96,21 @@ public class ModBlocks {
     /** The post a street lamp stands on. */
     public static final DeferredBlock<LampPostBlock> LAMP_POST = BLOCKS.register("lamp_post",
             () -> new LampPostBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BARS).strength(2.0f)));
+
+    // --- The Last City ---
+
+    /** The floor of a giant elevator. Too heavy to break. */
+    public static final DeferredBlock<Block> ELEVATOR_PLATFORM = BLOCKS.register("elevator_platform",
+            () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).mapColor(MapColor.COLOR_GRAY)
+                    .strength(-1.0f, 3600000.0f).pushReaction(PushReaction.BLOCK)));
+
+    /** The control post of a giant elevator. */
+    public static final DeferredBlock<ElevatorConsoleBlock> ELEVATOR_CONSOLE = BLOCKS.register("elevator_console",
+            () -> new ElevatorConsoleBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).noOcclusion()
+                    .strength(-1.0f, 3600000.0f).lightLevel(state -> 4)));
+
+    /** A rusty sign from the old city. Chito can read it. */
+    public static final DeferredBlock<OldSignBlock> OLD_SIGN = BLOCKS.register("old_sign",
+            () -> new OldSignBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)
+                    .mapColor(MapColor.TERRACOTTA_BROWN).strength(2.0f, 6.0f)));
 }

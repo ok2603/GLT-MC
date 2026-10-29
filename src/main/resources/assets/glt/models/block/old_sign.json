@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/orientable",
+  "textures": {
+    "front": "glt:block/old_sign_front",
+    "side": "glt:block/old_sign_side",
+    "top": "glt:block/old_sign_side"
+  }
+}

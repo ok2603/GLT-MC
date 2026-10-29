@@ -74,6 +74,26 @@ Legend: ✅ already merged · 🔨 planned, with the PR it lands in.
 | Moments need both girls | Many journal moments need both players near each other. Single player still works (it only needs everyone online to be close). | 🔨 3 |
 | Don't wander off | Too far apart for too long: both get "Lonely" (slower warmth recovery). | 🔨 8 |
 
+## How the Last City is built (PR 6)
+
+- **World type.** On the Create World screen, *World Type: Last City*. It swaps the Overworld for an empty
+  flat world 512 blocks tall (dimension type `glt:last_city`) whose only biome, `glt:dead_city`, has one
+  feature: `glt:city`. Vanilla world types are untouched. Nether and End stay vanilla.
+- **Why a feature and not a custom chunk generator.** The feature API is the same one the ruins already
+  use and is stable, so there is far less that can break between NeoForge versions. Each chunk builds only
+  its own blocks from a seeded plan (`city/CityLayout.java`), so chunks fit together in any order.
+- **Plan.** 8 floors, 56 blocks apart, each a 4-block concrete slab. 32x32 cells: roads on the edges,
+  one lot inside (building, ruin, plaza, giant pipes, light-well hole, tank battlefield, temple, factory,
+  fish farm, elevator, stair tower). Higher floors are emptier and colder. Pillars hold each floor up where
+  roads cross, pipes hang under every ceiling. The top floor is open to the sky, with the summit stone at (18, 18).
+- **Getting up.** One elevator per 4x4 cells on each floor (the first is always next to the start, with a
+  fuel cache). Going up burns a Fuel Canister and needs Chito; going down is free. Spiral ramp towers
+  (rarer) climb a quarter block per step, so the Kettenkrad can drive up without fuel.
+- **Spawn.** Players start on the bottom floor at (3, 8, 20). Without a bed or bedroll, you respawn there.
+- **Lamps.** Lit districts of street lamps; lamps now switch on wherever the sun doesn't reach.
+- **Sky.** 4000 extra stars in the city, brighter the higher you are.
+- Config: `lastCity.elevatorNeedsFuel`, `lastCity.cityHeightCold`.
+
 ## PR order
 
 1. **Scavenging**: config file, loot in vanilla and new crates, supply crate + wrecked tank blocks, scrap parts, old notes, beer, no-farming, auto roles, role loot bonuses.

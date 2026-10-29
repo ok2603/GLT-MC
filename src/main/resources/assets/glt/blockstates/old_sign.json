@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "glt:block/old_sign"
+    },
+    "facing=east": {
+      "model": "glt:block/old_sign",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "glt:block/old_sign",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "glt:block/old_sign",
+      "y": 270
+    }
+  }
+}

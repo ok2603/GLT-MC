@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -59,7 +60,7 @@ public class StreetLampBlock extends Block {
 
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        boolean shouldBeLit = isDark(level);
+        boolean shouldBeLit = isDark(level, pos);
         if (state.getValue(LIT) != shouldBeLit) {
             level.setBlock(pos, state.setValue(LIT, shouldBeLit), 3);
             if (shouldBeLit) {
@@ -73,8 +74,12 @@ public class StreetLampBlock extends Block {
         level.scheduleTick(pos, this, CHECK_TICKS + random.nextInt(20));
     }
 
-    private static boolean isDark(Level level) {
-        long time = level.getDayTime() % 24000L;
-        return time > 12500 && time < 23500;
+    /**
+     * Dark means: night time, or a place the sun never reaches (like the lower floors of the city,
+     * where the street lamps never go out).
+     */
+    private static boolean isDark(Level level, BlockPos pos) {
+        int daylight = level.getBrightness(LightLayer.SKY, pos) - level.getSkyDarken();
+        return daylight < 8;
     }
 }
