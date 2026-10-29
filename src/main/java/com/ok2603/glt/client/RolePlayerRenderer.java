@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.resources.ResourceLocation;
 
 /**
- * Placeholder look for Chito and Yuuri: the normal (slim-armed) player model
+ * Chito and Yuuri's look: the normal player model (classic 4-pixel arms)
  * with their own skin. Later this can be swapped for a Blockbench model.
  */
 public class RolePlayerRenderer extends PlayerRenderer {
@@ -20,7 +20,7 @@ public class RolePlayerRenderer extends PlayerRenderer {
     private final ResourceLocation skin;
 
     public RolePlayerRenderer(EntityRendererProvider.Context context, ResourceLocation skin) {
-        super(context, true);
+        super(context, false); // false = classic arms, to match the skins
         this.skin = skin;
     }
 

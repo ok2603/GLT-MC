@@ -14,7 +14,6 @@
   "key.categories.glt": "Girls' Last Tour",
   "key.glt.role_menu": "Choose Chito or Yuuri",
   "message.glt.role.hint": "Press H to choose whether you play as Chito or Yuuri.",
-  "message.glt.kettenkrad.cant_drive": "Only Chito can drive. Yuuri rides along.",
   "screen.glt.role.title": "Who are you?",
   "screen.glt.role.current": "Currently: %s",
   "screen.glt.role.none": "nobody yet",
@@ -23,7 +22,7 @@
   "screen.glt.role.together": "Together: stay close and you both keep warmer.",
   "role.glt.chito": "Chito",
   "role.glt.chito.tagline": "The thinker",
-  "role.glt.chito.perk1": "The only one who can drive the Kettenkrad",
+  "role.glt.chito.perk1": "Drives the Kettenkrad faster (+1 block per second)",
   "role.glt.chito.perk2": "Uses less fuel when driving",
   "role.glt.chito.con1": "Breaks blocks more slowly",
   "role.glt.chito.con2": "Hits more softly",
@@ -34,5 +33,5 @@
   "role.glt.yuuri.perk2": "Hits harder",
   "role.glt.yuuri.perk3": "Handles the cold better",
   "role.glt.yuuri.con1": "Gets hungry faster",
-  "role.glt.yuuri.con2": "Can't drive the Kettenkrad"
+  "role.glt.yuuri.con2": "Slow to speed up and steer the Kettenkrad"
 }

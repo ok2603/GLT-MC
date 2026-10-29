@@ -29,8 +29,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * The Kettenkrad: Chito and Yuuri's half-track.
  *
- * - Right-click to get on. The driver sits in front, the other rider in the back.
- *   Only Chito (or a player without a role) can drive. Yuuri always rides.
+ * - Right-click to get on. The first rider drives, the second sits in the back.
+ *   Chito drives faster; Yuuri is slow to speed up and to steer (see Roles).
  * - W/S to drive forward and back, A/D to turn. Shift to get off.
  * - It only drives while it has fuel. Right-click it with a Fuel Canister to refuel.
  * - Sneak + right-click shows how much fuel is left.
@@ -124,13 +124,7 @@ public class KettenkradEntity extends Entity {
         // Get on.
         if (!player.isPassenger() && canAddPassenger(player)) {
             if (!level().isClientSide) {
-                if (!player.startRiding(this)) {
-                    return InteractionResult.PASS;
-                }
-                if (!Roles.canDrive(player)) {
-                    player.displayClientMessage(Component.translatable("message.glt.kettenkrad.cant_drive"), true);
-                }
-                return InteractionResult.CONSUME;
+                return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
             }
             return InteractionResult.SUCCESS;
         }
@@ -142,25 +136,17 @@ public class KettenkradEntity extends Entity {
         return getPassengers().size() < 2;
     }
 
-    /** The driver is the first rider who is allowed to drive (Yuuri can't). */
+    /** Whoever got on first drives. */
     @Nullable
     @Override
     public LivingEntity getControllingPassenger() {
-        for (Entity passenger : getPassengers()) {
-            if (passenger instanceof Player player && Roles.canDrive(player)) {
-                return player;
-            }
-        }
-        return null;
+        return getFirstPassenger() instanceof Player player ? player : null;
     }
 
     /** Where each rider sits: driver in front, passenger in the back. */
     @Override
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float partialTick) {
-        LivingEntity driver = getControllingPassenger();
-        boolean frontSeat = driver != null
-                ? passenger == driver
-                : getPassengers().indexOf(passenger) <= 0;
+        boolean frontSeat = getPassengers().indexOf(passenger) <= 0;
         double forward = frontSeat ? 0.15 : -0.55;
         return new Vec3(0.0, 0.8, forward).yRot(-getYRot() * Mth.DEG_TO_RAD);
     }
@@ -209,16 +195,25 @@ public class KettenkradEntity extends Entity {
     private void drive() {
         float forwardInput = 0;
         float turnInput = 0;
-        if (getControllingPassenger() instanceof Player driver && getFuel() > 0) {
-            forwardInput = driver.zza; // W = positive, S = negative
-            turnInput = driver.xxa;    // A = positive, D = negative
+        float maxSpeed = MAX_SPEED;
+        float acceleration = ACCELERATION;
+        float turnSpeed = TURN_SPEED;
+        if (getControllingPassenger() instanceof Player driver) {
+            if (getFuel() > 0) {
+                forwardInput = driver.zza; // W = positive, S = negative
+                turnInput = driver.xxa;    // A = positive, D = negative
+            }
+            // Chito drives faster; Yuuri is slow to speed up and to steer.
+            maxSpeed += Roles.extraDrivingSpeed(driver);
+            acceleration *= Roles.accelerationMultiplier(driver);
+            turnSpeed *= Roles.steeringMultiplier(driver);
         }
 
         // Speed up, slow down, or roll to a stop.
         if (forwardInput > 0) {
-            speed = Math.min(speed + ACCELERATION, MAX_SPEED);
+            speed = Math.min(speed + acceleration, maxSpeed);
         } else if (forwardInput < 0) {
-            speed = Math.max(speed - ACCELERATION, -MAX_REVERSE_SPEED);
+            speed = Math.max(speed - acceleration, -MAX_REVERSE_SPEED);
         } else {
             speed *= 0.85f;
             if (Math.abs(speed) < 0.005f) {
@@ -227,9 +222,9 @@ public class KettenkradEntity extends Entity {
         }
 
         // Steering. Turning in reverse feels natural when it's flipped.
-        yawDelta = -turnInput * TURN_SPEED * (speed < 0 ? -1 : 1);
+        yawDelta = -turnInput * turnSpeed * (speed < 0 ? -1 : 1);
         if (speed == 0) {
-            yawDelta = -turnInput * TURN_SPEED * 0.5f; // the tracks can turn on the spot, slowly
+            yawDelta = -turnInput * turnSpeed * 0.5f; // the tracks can turn on the spot, slowly
         }
         setYRot(getYRot() + yawDelta);
 
