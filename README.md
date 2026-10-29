@@ -13,10 +13,20 @@ A quiet survival mod inspired by the anime *Girls' Last Tour*: scavenge rations 
 | Chocolate Ration | Better food, eaten quickly |
 | Canned Fish | Food (8 hunger) |
 | Soup | Very filling food |
-| Fuel Canister | Fuel for the Kettenkrad (coming next) |
+| Fuel Canister | Fuel for the Kettenkrad (2 minutes of driving each) |
+| Kettenkrad | Rideable half-track for two. See below |
 | Chito's Journal | Placeholder, will become a writable journal |
 
 All items are in the **Girls' Last Tour** creative tab.
+
+### Driving the Kettenkrad
+
+- Right-click the ground with the Kettenkrad item to place it.
+- Right-click it with a **Fuel Canister** to refuel. It won't move without fuel.
+- Right-click it to get on. The first player drives, a second player sits in the back.
+- **W / S** drive forward and back, **A / D** turn. **Shift** gets off.
+- Sneak + right-click shows the fuel left.
+- Hit it a few times to pick it back up.
 
 ## How to try it
 
@@ -37,4 +47,7 @@ To get a `.jar` you can drop into a normal NeoForge `mods` folder, run `./gradle
   - `GLTMod.java` — the main mod class
   - `registry/ModItems.java` — all items
   - `registry/ModCreativeTabs.java` — the creative tab
+  - `registry/ModEntities.java` — all entities
+  - `entity/KettenkradEntity.java` — how the Kettenkrad drives, refuels and breaks
+  - `client/` — the Kettenkrad's 3D model and renderer
 - `src/main/resources/assets/glt/` — textures, models and names (`lang/en_us.json`)

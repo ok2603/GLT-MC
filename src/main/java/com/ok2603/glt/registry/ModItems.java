@@ -1,6 +1,7 @@
 package com.ok2603.glt.registry;
 
 import com.ok2603.glt.GLTMod;
+import com.ok2603.glt.item.KettenkradItem;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -44,4 +45,10 @@ public class ModItems {
     /** Chito's journal. For now a plain item; later it will open a writable book. */
     public static final DeferredItem<Item> CHITOS_JOURNAL = ITEMS.registerSimpleItem("chitos_journal",
             new Item.Properties().stacksTo(1));
+
+    // --- Vehicles ---
+
+    /** The Kettenkrad. Right-click the ground to place it. */
+    public static final DeferredItem<KettenkradItem> KETTENKRAD = ITEMS.registerItem("kettenkrad",
+            KettenkradItem::new, new Item.Properties().stacksTo(1));
 }
