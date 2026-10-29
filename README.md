@@ -12,12 +12,24 @@ A quiet survival mod inspired by the anime *Girls' Last Tour*: scavenge rations 
 | Ration Bar | Food (6 hunger) |
 | Chocolate Ration | Better food, eaten quickly |
 | Canned Fish | Food (8 hunger) |
-| Soup | Very filling food |
+| Soup | Very filling food, and warms you up |
 | Fuel Canister | Fuel for the Kettenkrad (2 minutes of driving each) |
 | Kettenkrad | Rideable half-track for two. See below |
+| Chito's Coat | Chestplate that protects a lot from the cold (leather + wool) |
+| Yuuri's Helmet | Helmet that protects a bit from the cold (iron + green dye) |
 | Chito's Journal | Placeholder, will become a writable journal |
 
 All items are in the **Girls' Last Tour** creative tab.
+
+### The cold
+
+There are no monsters in the Overworld. Zombies, creepers, skeletons, phantoms, patrols and raids never appear on their own (spawn eggs, commands and monster spawners still work, and the Nether and End are unchanged). The danger is the cold instead.
+
+- The thermometer left of the hotbar shows your **body heat**. Orange is warm, blue is cold.
+- You lose heat faster in snowy biomes, at night, in snow or rain, and in water.
+- A roof over your head halves the heat loss. So does wearing warm clothes (Chito's Coat is the best, leather armor helps a little), and standing right next to another player.
+- You warm up next to a lit campfire, fire, lava, magma or a lit furnace, next to a Kettenkrad with its engine running, and by eating Soup.
+- When body heat gets low, frost covers the screen and you slow down. At zero you start freezing to death.
 
 ### Driving the Kettenkrad
 
@@ -49,5 +61,7 @@ To get a `.jar` you can drop into a normal NeoForge `mods` folder, run `./gradle
   - `registry/ModCreativeTabs.java` — the creative tab
   - `registry/ModEntities.java` — all entities
   - `entity/KettenkradEntity.java` — how the Kettenkrad drives, refuels and breaks
-  - `client/` — the Kettenkrad's 3D model and renderer
+  - `cold/BodyHeat.java` — the body heat system (all the numbers are at the top)
+  - `cold/NoMonsters.java` — stops monsters from spawning
+  - `client/` — the Kettenkrad's 3D model and the thermometer on screen
 - `src/main/resources/assets/glt/` — textures, models and names (`lang/en_us.json`)

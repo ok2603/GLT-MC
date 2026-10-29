@@ -2,6 +2,8 @@ package com.ok2603.glt.registry;
 
 import com.ok2603.glt.GLTMod;
 import com.ok2603.glt.item.KettenkradItem;
+import com.ok2603.glt.item.WarmFoodItem;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -31,8 +33,9 @@ public class ModItems {
             new Item.Properties().food(new FoodProperties.Builder()
                     .nutrition(8).saturationModifier(0.7f).build()));
 
-    /** Warm soup. Good on a cold night. */
-    public static final DeferredItem<Item> SOUP = ITEMS.registerSimpleItem("soup",
+    /** Warm soup. Good on a cold night: also restores body heat. */
+    public static final DeferredItem<WarmFoodItem> SOUP = ITEMS.registerItem("soup",
+            properties -> new WarmFoodItem(properties, 30f),
             new Item.Properties().stacksTo(16).food(new FoodProperties.Builder()
                     .nutrition(5).saturationModifier(0.9f).build()));
 
@@ -51,4 +54,16 @@ public class ModItems {
     /** The Kettenkrad. Right-click the ground to place it. */
     public static final DeferredItem<KettenkradItem> KETTENKRAD = ITEMS.registerItem("kettenkrad",
             KettenkradItem::new, new Item.Properties().stacksTo(1));
+
+    // --- Clothes: they keep you warm ---
+
+    /** Chito's coat. The best protection against the cold. */
+    public static final DeferredItem<ArmorItem> CHITOS_COAT = ITEMS.registerItem("chitos_coat",
+            properties -> new ArmorItem(ModArmorMaterials.COAT, ArmorItem.Type.CHESTPLATE, properties),
+            new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(15)));
+
+    /** Yuuri's army helmet. Keeps your head warm and protects it too. */
+    public static final DeferredItem<ArmorItem> YUURIS_HELMET = ITEMS.registerItem("yuuris_helmet",
+            properties -> new ArmorItem(ModArmorMaterials.ARMY_HELMET, ArmorItem.Type.HELMET, properties),
+            new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(15)));
 }
