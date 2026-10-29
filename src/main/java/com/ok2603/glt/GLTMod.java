@@ -1,6 +1,7 @@
 package com.ok2603.glt;
 
 import com.ok2603.glt.registry.ModCreativeTabs;
+import com.ok2603.glt.registry.ModEntities;
 import com.ok2603.glt.registry.ModItems;
 import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
@@ -20,6 +21,7 @@ public class GLTMod {
     public GLTMod(IEventBus modEventBus, ModContainer modContainer) {
         // Tell the game about everything this mod adds.
         ModItems.ITEMS.register(modEventBus);
+        ModEntities.ENTITY_TYPES.register(modEventBus);
         ModCreativeTabs.CREATIVE_TABS.register(modEventBus);
 
         LOGGER.info("Girls' Last Tour mod loaded. Let's keep going, Chii.");

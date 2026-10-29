@@ -5,5 +5,8 @@
   "item.glt.canned_fish": "Canned Fish",
   "item.glt.soup": "Soup",
   "item.glt.fuel_canister": "Fuel Canister",
-  "item.glt.chitos_journal": "Chito's Journal"
+  "item.glt.chitos_journal": "Chito's Journal",
+  "item.glt.kettenkrad": "Kettenkrad",
+  "entity.glt.kettenkrad": "Kettenkrad",
+  "message.glt.kettenkrad.fuel": "Fuel: %s%%"
 }
