@@ -1,6 +1,14 @@
 {
   "values": [
     "glt:tank_hatch",
-    "glt:rusted_plate"
+    "glt:rusted_plate",
+    "glt:pipe",
+    "glt:hot_pipe",
+    "glt:leaking_hot_pipe",
+    "glt:food_factory",
+    "glt:statue",
+    "glt:cairn",
+    "glt:street_lamp",
+    "glt:lamp_post"
   ]
 }

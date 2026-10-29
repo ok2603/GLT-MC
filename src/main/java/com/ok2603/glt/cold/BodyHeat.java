@@ -5,6 +5,8 @@ import com.ok2603.glt.entity.KettenkradEntity;
 import com.ok2603.glt.network.BodyHeatPayload;
 import com.ok2603.glt.registry.ModAttachments;
 import com.ok2603.glt.registry.ModItems;
+import com.ok2603.glt.registry.ModTags;
+import com.ok2603.glt.survival.HotBath;
 import com.ok2603.glt.role.Roles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -60,6 +62,8 @@ public class BodyHeat {
     private static final float FIRE_GAIN = 2.0f;           // campfire, fire, lava, lit furnace
     private static final float ENGINE_GAIN = 1.0f;         // next to a running Kettenkrad
     private static final float HOT_BIOME_GAIN = 0.5f;      // deserts, savannas, the Nether
+    private static final float BATH_GAIN = 8.0f;           // sitting in water warmed by a leaking hot pipe
+    private static final float WASHED_COAT_BONUS = 0.15f;  // a freshly washed coat is extra warm
 
     private static final int HEAT_SOURCE_RANGE = 3;
 
@@ -131,7 +135,8 @@ public class BodyHeat {
         if (level.isRaining() && underSky && biome.getPrecipitationAt(pos) != Biome.Precipitation.NONE) {
             loss += SNOWSTORM_LOSS;
         }
-        if (player.isInWater()) {
+        boolean bathing = HotBath.isBathing(player);
+        if (player.isInWater() && !bathing) {
             loss += WATER_LOSS;
         }
 
@@ -150,13 +155,16 @@ public class BodyHeat {
         for (ItemStack armor : player.getArmorSlots()) {
             if (armor.is(ModItems.CHITOS_COAT.get())) {
                 protection += COAT_PROTECTION;
+                if (HotBath.isFreshlyWashed(armor, player.level())) {
+                    protection += WASHED_COAT_BONUS;
+                }
             } else if (armor.is(ModItems.YUURIS_HELMET.get())) {
                 protection += HELMET_PROTECTION;
             } else if (armor.is(ItemTags.FREEZE_IMMUNE_WEARABLES)) {
                 protection += LEATHER_PROTECTION;
             }
         }
-        return Math.min(protection, 0.8f);
+        return Math.min(protection, 0.85f);
     }
 
     /** Huddling together like Chito and Yuuri. */
@@ -191,6 +199,10 @@ public class BodyHeat {
             }
         }
 
+        if (HotBath.isBathing(player)) {
+            gain += BATH_GAIN;
+        }
+
         boolean nearEngine = !level.getEntitiesOfClass(KettenkradEntity.class,
                 player.getBoundingBox().inflate(HEAT_SOURCE_RANGE), KettenkradEntity::isEngineRunning).isEmpty();
         if (nearEngine) {
@@ -206,7 +218,8 @@ public class BodyHeat {
         if (state.getBlock() instanceof AbstractFurnaceBlock) {
             return state.getValue(AbstractFurnaceBlock.LIT);
         }
-        return state.is(BlockTags.FIRE) || state.is(Blocks.LAVA) || state.is(Blocks.MAGMA_BLOCK);
+        return state.is(BlockTags.FIRE) || state.is(Blocks.LAVA) || state.is(Blocks.MAGMA_BLOCK)
+                || state.is(ModTags.HEAT_SOURCES);
     }
 
     // ---------- Joining and respawning ----------

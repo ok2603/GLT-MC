@@ -49,7 +49,7 @@ def model_exists(ref):
 
 def main():
     src = java_sources()
-    items = registered(src, "ITEMS")
+    items = registered(src, "ITEMS") | set(re.findall(r'blockItem\(\s*"([a-z0-9_/]+)"', src))
     blocks = registered(src, "BLOCKS")
     lang = json.loads((ASSETS / "lang/en_us.json").read_text())
 

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "glt:block/hot_pipe_end",
+    "side": "glt:block/leaking_hot_pipe_side"
+  }
+}

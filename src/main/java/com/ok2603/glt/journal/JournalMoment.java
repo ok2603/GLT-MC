@@ -30,6 +30,14 @@ public enum JournalMoment {
     RIFLE("rifle", false),
     NUKO("nuko", false),
     NUKO_RADIO("nuko_radio", true),
+    // Small moments
+    BATH("bath", true),
+    RAIN_MUSIC("rain_music", true),
+    FOOD_FACTORY("food_factory", false),
+    OFFERING("offering", false),
+    CAIRN("cairn", false),
+    STREET_LAMPS("street_lamps", true),
+    PHOTO("photo", true),
     // Paper
     OLD_NOTE("old_note", false),
     BURN_BOOK("burn_book", false),

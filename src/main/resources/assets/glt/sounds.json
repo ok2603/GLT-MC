@@ -39,5 +39,11 @@
         "stream": true
       }
     ]
+  },
+  "camera_shutter": {
+    "subtitle": "subtitles.glt.camera_shutter",
+    "sounds": [
+      "glt:camera_shutter"
+    ]
   }
 }

@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#glt:has_hot_springs",
+  "features": "glt:hot_spring",
+  "step": "surface_structures"
+}

@@ -2,6 +2,10 @@ package com.ok2603.glt.registry;
 
 import com.ok2603.glt.GLTMod;
 import com.ok2603.glt.item.BeerItem;
+import com.ok2603.glt.item.CameraItem;
+import com.ok2603.glt.item.CannedFoodItem;
+import com.ok2603.glt.item.EmptyCanItem;
+import com.ok2603.glt.item.PhotoItem;
 import com.ok2603.glt.item.ChitosJournalItem;
 import com.ok2603.glt.item.KettenkradItem;
 import com.ok2603.glt.item.NukoItem;
@@ -38,8 +42,9 @@ public class ModItems {
             new Item.Properties().food(new FoodProperties.Builder()
                     .nutrition(7).saturationModifier(0.8f).fast().build()));
 
-    /** Canned fish, like the fish from the factory. */
-    public static final DeferredItem<Item> CANNED_FISH = ITEMS.registerSimpleItem("canned_fish",
+    /** Canned fish, like the fish from the factory. Leaves an empty can. */
+    public static final DeferredItem<CannedFoodItem> CANNED_FISH = ITEMS.registerItem("canned_fish",
+            properties -> new CannedFoodItem(properties, () -> ModItems.EMPTY_CAN.get()),
             new Item.Properties().food(new FoodProperties.Builder()
                     .nutrition(8).saturationModifier(0.7f).build()));
 
@@ -105,6 +110,29 @@ public class ModItems {
     public static final DeferredItem<BlockItem> BEDROLL = ITEMS.register("bedroll",
             () -> new BlockItem(ModBlocks.BEDROLL.get(), new Item.Properties().stacksTo(1)));
 
+    // --- Small moments ---
+
+    /** An empty can. Set it out in the rain to hear it ping. */
+    public static final DeferredItem<EmptyCanItem> EMPTY_CAN = ITEMS.register("empty_can",
+            () -> new EmptyCanItem(ModBlocks.RAIN_CATCHER.get(), new Item.Properties()));
+
+    /** Kanazawa's camera. 24 shots of film; reload it with paper in an anvil. */
+    public static final DeferredItem<CameraItem> CAMERA = ITEMS.registerItem("camera",
+            CameraItem::new, new Item.Properties().durability(25));
+
+    /** A photo from the trip. */
+    public static final DeferredItem<PhotoItem> PHOTO = ITEMS.registerItem("photo",
+            PhotoItem::new, new Item.Properties().stacksTo(1));
+
+    public static final DeferredItem<BlockItem> PIPE = blockItem("pipe", ModBlocks.PIPE);
+    public static final DeferredItem<BlockItem> HOT_PIPE = blockItem("hot_pipe", ModBlocks.HOT_PIPE);
+    public static final DeferredItem<BlockItem> LEAKING_HOT_PIPE = blockItem("leaking_hot_pipe", ModBlocks.LEAKING_HOT_PIPE);
+    public static final DeferredItem<BlockItem> FOOD_FACTORY = blockItem("food_factory", ModBlocks.FOOD_FACTORY);
+    public static final DeferredItem<BlockItem> STATUE = blockItem("statue", ModBlocks.STATUE);
+    public static final DeferredItem<BlockItem> CAIRN = blockItem("cairn", ModBlocks.CAIRN);
+    public static final DeferredItem<BlockItem> STREET_LAMP = blockItem("street_lamp", ModBlocks.STREET_LAMP);
+    public static final DeferredItem<BlockItem> LAMP_POST = blockItem("lamp_post", ModBlocks.LAMP_POST);
+
     // --- Vehicles ---
 
     /** The Kettenkrad. Right-click the ground to place it. */
@@ -122,4 +150,8 @@ public class ModItems {
     public static final DeferredItem<ArmorItem> YUURIS_HELMET = ITEMS.registerItem("yuuris_helmet",
             properties -> new ArmorItem(ModArmorMaterials.ARMY_HELMET, ArmorItem.Type.HELMET, properties),
             new Item.Properties().durability(ArmorItem.Type.HELMET.getDurability(15)));
+
+    private static DeferredItem<BlockItem> blockItem(String name, java.util.function.Supplier<? extends net.minecraft.world.level.block.Block> block) {
+        return ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+    }
 }

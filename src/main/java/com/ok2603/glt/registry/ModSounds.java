@@ -21,6 +21,8 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> NUKO_EAT = sound("nuko_eat");
     public static final DeferredHolder<SoundEvent, SoundEvent> NUKO_RADIO = sound("nuko_radio");
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> CAMERA_SHUTTER = sound("camera_shutter");
+
     private static DeferredHolder<SoundEvent, SoundEvent> sound(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(GLTMod.MODID, name)));
     }

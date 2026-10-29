@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=y": {
+      "model": "glt:block/leaking_hot_pipe"
+    },
+    "axis=z": {
+      "model": "glt:block/leaking_hot_pipe_horizontal",
+      "x": 90
+    },
+    "axis=x": {
+      "model": "glt:block/leaking_hot_pipe_horizontal",
+      "x": 90,
+      "y": 90
+    }
+  }
+}
