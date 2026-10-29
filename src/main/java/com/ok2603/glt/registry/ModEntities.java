@@ -2,6 +2,7 @@ package com.ok2603.glt.registry;
 
 import com.ok2603.glt.GLTMod;
 import com.ok2603.glt.entity.KettenkradEntity;
+import com.ok2603.glt.entity.SeatEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -16,7 +17,17 @@ public class ModEntities {
     public static final DeferredHolder<EntityType<?>, EntityType<KettenkradEntity>> KETTENKRAD =
             ENTITY_TYPES.register("kettenkrad", () -> EntityType.Builder
                     .<KettenkradEntity>of(KettenkradEntity::new, MobCategory.MISC)
-                    .sized(1.5f, 1.0f) // width and height of the hitbox, in blocks
+                    .sized(1.75f, 1.1f) // width and height of the hitbox, in blocks
                     .clientTrackingRange(10)
                     .build("kettenkrad"));
+
+    /** Invisible seat used when a player sits down with Z. */
+    public static final DeferredHolder<EntityType<?>, EntityType<SeatEntity>> SEAT =
+            ENTITY_TYPES.register("seat", () -> EntityType.Builder
+                    .<SeatEntity>of(SeatEntity::new, MobCategory.MISC)
+                    .sized(0.1f, 0.1f)
+                    .noSave()
+                    .fireImmune()
+                    .clientTrackingRange(10)
+                    .build("seat"));
 }

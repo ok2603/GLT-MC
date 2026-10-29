@@ -3,12 +3,16 @@ package com.ok2603.glt.entity;
 import com.ok2603.glt.registry.ModItems;
 import com.ok2603.glt.role.Role;
 import com.ok2603.glt.role.Roles;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -22,6 +26,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -34,7 +40,8 @@ import org.jetbrains.annotations.Nullable;
  * - W/S to drive forward and back, A/D to turn. Shift to get off.
  * - It only drives while it has fuel. Right-click it with a Fuel Canister to refuel.
  * - Sneak + right-click shows how much fuel is left.
- * - Hit it a few times to pick it back up as an item.
+ * - When it's stopped, left-click it to set up camp: a campfire appears on the side you're standing on.
+ * - Sneak + left-click a few times to pick it back up as an item.
  */
 public class KettenkradEntity extends Entity {
     /** Fuel is counted in ticks of driving (20 ticks = 1 second). */
@@ -147,8 +154,10 @@ public class KettenkradEntity extends Entity {
     @Override
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float partialTick) {
         boolean frontSeat = getPassengers().indexOf(passenger) <= 0;
-        double forward = frontSeat ? 0.15 : -0.55;
-        return new Vec3(0.0, 0.8, forward).yRot(-getYRot() * Mth.DEG_TO_RAD);
+        // Driver on the seat behind the handlebars, passenger in the rear bed.
+        double forward = frontSeat ? 0.22 : -0.62;
+        double height = frontSeat ? 0.6 : 0.55;
+        return new Vec3(0.0, height, forward).yRot(-getYRot() * Mth.DEG_TO_RAD);
     }
 
     /** Turn the riders together with the vehicle. */
@@ -267,6 +276,79 @@ public class KettenkradEntity extends Entity {
             lerpPositionAndRotationStep(lerpSteps, lerpX, lerpY, lerpZ, lerpYRot, lerpXRot);
             lerpSteps--;
         }
+    }
+
+    // ---------- Camping ----------
+
+    /** How far from the middle of the Kettenkrad the campfire goes, in blocks. */
+    private static final double CAMP_DISTANCE = 2.0;
+
+    /** Nobody is driving it and it isn't rolling. */
+    public boolean isStopped() {
+        return getControllingPassenger() == null && getDeltaMovement().horizontalDistanceSqr() < 1.0e-4;
+    }
+
+    /**
+     * Left-click (without sneaking) sets up camp instead of damaging the Kettenkrad.
+     * Sneak + left-click still hits it, so it can be picked up.
+     */
+    @Override
+    public boolean skipAttackInteraction(Entity attacker) {
+        if (attacker instanceof Player player && !player.isShiftKeyDown()) {
+            if (!level().isClientSide && isStopped()) {
+                setUpCamp(player);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private void setUpCamp(Player player) {
+        if (campfireNearby()) {
+            player.displayClientMessage(Component.translatable("message.glt.camp.already"), true);
+            return;
+        }
+
+        // Which side of the Kettenkrad is the player on? "right" is the driver's right.
+        float yawRad = getYRot() * Mth.DEG_TO_RAD;
+        Vec3 right = new Vec3(-Mth.cos(yawRad), 0, -Mth.sin(yawRad));
+        double side = player.position().subtract(position()).dot(right) >= 0 ? 1 : -1;
+        BlockPos spot = findCampSpot(BlockPos.containing(position().add(right.scale(side * CAMP_DISTANCE))));
+        if (spot == null) {
+            player.displayClientMessage(Component.translatable("message.glt.camp.no_room"), true);
+            return;
+        }
+
+        level().setBlock(spot, Blocks.CAMPFIRE.defaultBlockState()
+                .setValue(CampfireBlock.FACING, Direction.fromYRot(getYRot())), 3);
+        level().playSound(null, spot, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1.0f, 1.0f);
+        level().gameEvent(player, GameEvent.BLOCK_PLACE, spot);
+        player.displayClientMessage(Component.translatable("message.glt.camp.set_up"), true);
+    }
+
+    /** Finds a free spot with solid ground near the given position (a little up or down is fine). */
+    @Nullable
+    private BlockPos findCampSpot(BlockPos start) {
+        for (int dy : new int[]{0, 1, -1, 2, -2}) {
+            BlockPos pos = start.above(dy);
+            BlockPos below = pos.below();
+            if (level().getBlockState(pos).canBeReplaced()
+                    && level().getFluidState(pos).isEmpty()
+                    && level().getBlockState(below).isFaceSturdy(level(), below, Direction.UP)) {
+                return pos;
+            }
+        }
+        return null;
+    }
+
+    private boolean campfireNearby() {
+        BlockPos center = blockPosition();
+        for (BlockPos pos : BlockPos.betweenClosed(center.offset(-4, -2, -4), center.offset(4, 2, 4))) {
+            if (level().getBlockState(pos).is(BlockTags.CAMPFIRES)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // ---------- Breaking ----------

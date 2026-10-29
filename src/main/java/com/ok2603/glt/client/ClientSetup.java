@@ -7,6 +7,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
@@ -21,9 +22,14 @@ public class ClientSetup {
     public static final KeyMapping ROLE_MENU_KEY = new KeyMapping("key.glt.role_menu",
             InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_H, "key.categories.glt");
 
+    /** Sit down or stand up. Default key: Z. */
+    public static final KeyMapping SIT_KEY = new KeyMapping("key.glt.sit",
+            InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_Z, "key.categories.glt");
+
     @SubscribeEvent
     public static void registerKeys(RegisterKeyMappingsEvent event) {
         event.register(ROLE_MENU_KEY);
+        event.register(SIT_KEY);
     }
 
     /** Builds the Chito and Yuuri player renderers once the game is ready. */
@@ -36,6 +42,7 @@ public class ClientSetup {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.KETTENKRAD.get(), KettenkradRenderer::new);
+        event.registerEntityRenderer(ModEntities.SEAT.get(), NoopRenderer::new); // the seat is invisible
     }
 
     @SubscribeEvent
@@ -47,5 +54,7 @@ public class ClientSetup {
     public static void registerHud(RegisterGuiLayersEvent event) {
         event.registerAbove(VanillaGuiLayers.HOTBAR,
                 ResourceLocation.fromNamespaceAndPath(GLTMod.MODID, "body_heat"), new BodyHeatHud());
+        event.registerAbove(VanillaGuiLayers.CROSSHAIR,
+                ResourceLocation.fromNamespaceAndPath(GLTMod.MODID, "kettenkrad_prompt"), new KettenkradPromptHud());
     }
 }
