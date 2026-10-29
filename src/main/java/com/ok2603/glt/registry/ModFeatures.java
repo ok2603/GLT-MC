@@ -1,6 +1,7 @@
 package com.ok2603.glt.registry;
 
 import com.ok2603.glt.GLTMod;
+import com.ok2603.glt.city.CityFeature;
 import com.ok2603.glt.worldgen.HotSpringFeature;
 import com.ok2603.glt.worldgen.ShrineFeature;
 import com.ok2603.glt.worldgen.SupplyCacheFeature;
@@ -29,4 +30,8 @@ public class ModFeatures {
 
     public static final DeferredHolder<Feature<?>, ShrineFeature> SHRINE =
             FEATURES.register("shrine", () -> new ShrineFeature(NoneFeatureConfiguration.CODEC));
+
+    /** The whole Last City, built one chunk at a time (only in the Last City world type). */
+    public static final DeferredHolder<Feature<?>, CityFeature> CITY =
+            FEATURES.register("city", () -> new CityFeature(NoneFeatureConfiguration.CODEC));
 }

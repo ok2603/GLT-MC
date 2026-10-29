@@ -132,6 +132,9 @@ public class ModItems {
     public static final DeferredItem<BlockItem> CAIRN = blockItem("cairn", ModBlocks.CAIRN);
     public static final DeferredItem<BlockItem> STREET_LAMP = blockItem("street_lamp", ModBlocks.STREET_LAMP);
     public static final DeferredItem<BlockItem> LAMP_POST = blockItem("lamp_post", ModBlocks.LAMP_POST);
+    public static final DeferredItem<BlockItem> ELEVATOR_PLATFORM = blockItem("elevator_platform", ModBlocks.ELEVATOR_PLATFORM);
+    public static final DeferredItem<BlockItem> ELEVATOR_CONSOLE = blockItem("elevator_console", ModBlocks.ELEVATOR_CONSOLE);
+    public static final DeferredItem<BlockItem> OLD_SIGN = blockItem("old_sign", ModBlocks.OLD_SIGN);
 
     // --- Vehicles ---
 

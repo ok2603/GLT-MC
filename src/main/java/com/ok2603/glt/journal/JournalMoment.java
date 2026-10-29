@@ -38,6 +38,10 @@ public enum JournalMoment {
     CAIRN("cairn", false),
     STREET_LAMPS("street_lamps", true),
     PHOTO("photo", true),
+    // The city
+    ELEVATOR("elevator", true),
+    NEW_FLOOR("new_floor", true),
+    OLD_SIGN("old_sign", false),
     // Paper
     OLD_NOTE("old_note", false),
     BURN_BOOK("burn_book", false),

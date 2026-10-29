@@ -1,5 +1,8 @@
 package com.ok2603.glt.cold;
 
+import com.ok2603.glt.city.CityLayout;
+import com.ok2603.glt.city.LastCity;
+import com.ok2603.glt.config.GLTConfig;
 import com.ok2603.glt.GLTMod;
 import com.ok2603.glt.entity.KettenkradEntity;
 import com.ok2603.glt.network.BodyHeatPayload;
@@ -131,6 +134,9 @@ public class BodyHeat {
         }
         if (level.dimension() == Level.OVERWORLD && !level.isDay()) {
             loss += NIGHT_LOSS;
+        }
+        if (LastCity.isCity(level)) {
+            loss += GLTConfig.get(GLTConfig.CITY_HEIGHT_COLD).floatValue() * LastCity.floor(player.getY()) / (CityLayout.FLOORS - 1);
         }
         if (level.isRaining() && underSky && biome.getPrecipitationAt(pos) != Biome.Precipitation.NONE) {
             loss += SNOWSTORM_LOSS;

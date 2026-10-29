@@ -26,6 +26,8 @@ public class GLTConfig {
     public static final ModConfigSpec.BooleanValue JOURNAL_NEEDS_BOTH;
     public static final ModConfigSpec.BooleanValue VANILLA_CHEST_LOOT;
     public static final ModConfigSpec.DoubleValue ROLE_LOOT_CHANCE;
+    public static final ModConfigSpec.BooleanValue ELEVATOR_NEEDS_FUEL;
+    public static final ModConfigSpec.DoubleValue CITY_HEIGHT_COLD;
 
     static {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
@@ -63,6 +65,15 @@ public class GLTConfig {
         ROLE_LOOT_CHANCE = builder
                 .comment("Chance that opening a chest gives a role bonus: Chito finds notes, maps and parts; Yuuri finds food.")
                 .defineInRange("roleLootChance", 0.35, 0.0, 1.0);
+        builder.pop();
+
+        builder.push("lastCity");
+        ELEVATOR_NEEDS_FUEL = builder
+                .comment("Riding a city elevator up burns one Fuel Canister. Going down is always free.")
+                .define("elevatorNeedsFuel", true);
+        CITY_HEIGHT_COLD = builder
+                .comment("Extra cold per second on the top floor of the Last City (lower floors get a share of it).")
+                .defineInRange("cityHeightCold", 0.3, 0.0, 5.0);
         builder.pop();
 
         SPEC = builder.build();

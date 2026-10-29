@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "glt:block/elevator_platform"
+    }
+  }
+}
