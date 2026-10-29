@@ -17,7 +17,7 @@ A quiet survival mod inspired by the anime *Girls' Last Tour*: scavenge rations 
 | Kettenkrad | Rideable half-track for two. See below |
 | Chito's Coat | Chestplate that protects a lot from the cold (leather + wool) |
 | Yuuri's Helmet | Helmet that protects a bit from the cold (iron + green dye) |
-| Chito's Journal | Placeholder, will become a writable journal |
+| Chito's Journal | The diary of the trip. See below |
 
 All items are in the **Girls' Last Tour** creative tab.
 
@@ -55,6 +55,39 @@ There are no monsters in the Overworld. Zombies, creepers, skeletons, phantoms, 
 ### Sitting
 
 Press **Z** to sit down on the ground, and Z (or Shift) again to stand up. Nice by the campfire.
+
+## The full trip (parts 1 to 8)
+
+### Playing together
+- The **host is Chito**, the friend who joins (LAN or the Essential mod) is **Yuuri**. You can still switch with H.
+- Chito reads old notes and signs (Yuuri sees scribbles), repairs machines, starts elevators and the food factory, and writes in the journal. Yuuri aims the rifle well, finds extra food in crates, finds the chocolate in tanks, and can push the Kettenkrad when it's out of fuel.
+- Right-click the other girl with food to **share** it: it fills her more than it would fill you.
+- Stay close. Far apart for a minute (48 blocks) and you both feel **Lonely**: fires and the engine warm you only half as well.
+- A hungry Yuuri sometimes sneaks a ration from the Kettenkrad.
+
+### Scavenging and survival
+- Supply caches and wrecked tanks appear in new worlds. Vanilla chests get rations and fuel too.
+- Crops don't grow outdoors in the cold (configurable). The **food factory** turns crops and sugar into ration bars.
+- Throw paper, books, maps or notes on a lit campfire for a burst of warmth. A **hot pipe bath** warms you fully; dip Chito's coat in it to make it extra warm for a while.
+- Rain on cans, buckets and helmets plays notes. Leave food at a **statue** for luck, add a stone to a **cairn**. Street lamps switch on in the dark. The **camera** takes "photos" of places.
+
+### The Kettenkrad is home
+- Sneak + right-click: its 27-slot storage. Scrap parts repair it. It wears out slowly and breaks if it crashes. The headlight shines while the engine runs. A **bedroll** next to it is a bed.
+
+### The journal
+- Chito's journal fills itself with entries when something new happens (the first chocolate, the stars, a bath, a new floor...). Many need both girls together. Chito can write her own pages.
+
+### Yuuri's rifle and Nuko
+- The rifle is very accurate for Yuuri and wild for Chito. Cartridges are very rare. **Nuko** follows you if you feed it, eats cartridges, and plays a little tune when you hold it.
+
+### The Last City world
+- On the Create World screen choose **World Type: Last City**. You start on the bottom of a city of 8 stacked floors, each colder and emptier than the one below.
+- **Elevators** lift you, your friend and the Kettenkrad to the next floor. Going up burns a Fuel Canister and needs Chito; the first elevator is next to the start, with a cache of fuel. **Ramp towers** let you climb without fuel, slowly.
+- You'll meet **Kanazawa** (trade food for a map to the next elevator), **Ishii** (bring her 8 scrap parts and a fuel canister and watch her fly), and old **robots** (the one at a fish farm gives a fish a day, but don't take too many).
+- At the very top there is a black stone. Stand next to it together to end the trip.
+
+### Settings
+Server settings are in `serverconfig/glt-server.toml` inside the world folder: no monsters, farming rules, auto roles, character names, journal "together" rule, loot, lonely distance, Yuuri's nibbling, elevator fuel and the city's cold.
 
 ### Editing the Kettenkrad model
 

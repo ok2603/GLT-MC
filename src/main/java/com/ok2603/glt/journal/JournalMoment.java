@@ -46,6 +46,11 @@ public enum JournalMoment {
     KANAZAWA("kanazawa", true),
     ISHII_FLIGHT("ishii_flight", true),
     ROBOT_FISH("robot_fish", false),
+    // Together
+    SHARE_FOOD("share_food", true),
+    NIBBLE("nibble", false),
+    LONELY("lonely", false),
+    ENDING("ending", true),
     // Paper
     OLD_NOTE("old_note", false),
     BURN_BOOK("burn_book", false),

@@ -27,6 +27,9 @@ public class GLTConfig {
     public static final ModConfigSpec.BooleanValue VANILLA_CHEST_LOOT;
     public static final ModConfigSpec.DoubleValue ROLE_LOOT_CHANCE;
     public static final ModConfigSpec.BooleanValue ELEVATOR_NEEDS_FUEL;
+    public static final ModConfigSpec.IntValue LONELY_DISTANCE;
+    public static final ModConfigSpec.IntValue LONELY_DELAY;
+    public static final ModConfigSpec.BooleanValue YUURI_NIBBLES;
     public static final ModConfigSpec.DoubleValue CITY_HEIGHT_COLD;
 
     static {
@@ -65,6 +68,19 @@ public class GLTConfig {
         ROLE_LOOT_CHANCE = builder
                 .comment("Chance that opening a chest gives a role bonus: Chito finds notes, maps and parts; Yuuri finds food.")
                 .defineInRange("roleLootChance", 0.35, 0.0, 1.0);
+        builder.pop();
+
+        builder.push("together");
+        LONELY_DISTANCE = builder
+                .comment("If the girls are farther apart than this (in blocks) for too long, both get \"Lonely\""
+                        + " (fires and the engine warm them half as well). 0 turns it off.")
+                .defineInRange("lonelyDistance", 48, 0, 1024);
+        LONELY_DELAY = builder
+                .comment("Seconds apart before feeling lonely.")
+                .defineInRange("lonelyDelay", 60, 1, 3600);
+        YUURI_NIBBLES = builder
+                .comment("Now and then, a hungry Yuuri sneaks a ration from the Kettenkrad's storage.")
+                .define("yuuriNibbles", true);
         builder.pop();
 
         builder.push("lastCity");
