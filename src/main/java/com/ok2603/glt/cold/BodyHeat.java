@@ -160,6 +160,10 @@ public class BodyHeat {
     }
 
     /** Huddling together like Chito and Yuuri. */
+    public static boolean isHuddling(ServerPlayer player) {
+        return hasPlayerNearby(player);
+    }
+
     private static boolean hasPlayerNearby(ServerPlayer player) {
         for (Player other : player.level().players()) {
             if (other != player && !other.isSpectator() && other.distanceToSqr(player) < 3 * 3) {

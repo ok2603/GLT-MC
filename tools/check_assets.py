@@ -84,8 +84,8 @@ def main():
 
     # Every translation key used in Java exists.
     for key in sorted(set(re.findall(r'(?:translatable|KeyMapping)\(\s*"([a-z0-9_.]+)"', src))):
-        if key.endswith("."):
-            continue  # the rest of the key is added in code, like "role.glt." + name
+        if "glt" not in key or key.endswith("."):
+            continue  # a vanilla key, or the rest is added in code like "role.glt." + name
         if key not in lang:
             err(f"translation {key} is used in the code but missing from en_us.json")
 

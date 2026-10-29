@@ -3,6 +3,8 @@ package com.ok2603.glt.survival;
 import com.ok2603.glt.GLTMod;
 import com.ok2603.glt.cold.BodyHeat;
 import com.ok2603.glt.entity.KettenkradEntity;
+import com.ok2603.glt.journal.Journal;
+import com.ok2603.glt.journal.JournalMoment;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -29,6 +31,7 @@ public class SleepEvents {
         if (nearHome) {
             BodyHeat.set(player, BodyHeat.MAX);
             player.displayClientMessage(Component.translatable("message.glt.bedroll.slept_home"), true);
+            Journal.unlock(player, JournalMoment.SLEEP_HOME);
         }
     }
 }

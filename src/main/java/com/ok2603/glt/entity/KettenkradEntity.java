@@ -4,7 +4,10 @@ import com.ok2603.glt.registry.ModBlocks;
 import com.ok2603.glt.registry.ModItems;
 import com.ok2603.glt.role.Role;
 import com.ok2603.glt.role.Roles;
+import com.ok2603.glt.journal.Journal;
+import com.ok2603.glt.journal.JournalMoment;
 import com.ok2603.glt.network.KettenkradCrashPayload;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
@@ -145,8 +148,9 @@ public class KettenkradEntity extends Entity {
         boolean wasBroken = isBroken();
         setCondition(getCondition() - amount);
         playSound(SoundEvents.ANVIL_LAND, 0.4f, 1.6f);
-        if (!wasBroken && isBroken() && getControllingPassenger() instanceof Player driver) {
+        if (!wasBroken && isBroken() && getControllingPassenger() instanceof ServerPlayer driver) {
             driver.displayClientMessage(Component.translatable("message.glt.kettenkrad.broken"), true);
+            Journal.unlock(driver, JournalMoment.BREAKDOWN);
         }
     }
 
@@ -215,6 +219,9 @@ public class KettenkradEntity extends Entity {
                     stack.shrink(1);
                 }
                 playSound(SoundEvents.ANVIL_USE, 0.5f, 1.4f);
+                if (player instanceof ServerPlayer serverPlayer) {
+                    Journal.unlock(serverPlayer, JournalMoment.REPAIR);
+                }
                 player.displayClientMessage(Component.translatable("message.glt.kettenkrad.repaired", getCondition()), true);
             }
             return InteractionResult.sidedSuccess(level().isClientSide);
@@ -318,6 +325,13 @@ public class KettenkradEntity extends Entity {
             boolean moving = movedX * movedX + movedZ * movedZ > 1.0e-4;
             if (moving && isEngineRunning() && !chitoSaves) {
                 setFuel(getFuel() - 1);
+                if (getFuel() == 0 && getControllingPassenger() instanceof ServerPlayer driver) {
+                    driver.displayClientMessage(Component.translatable("message.glt.kettenkrad.out_of_fuel"), true);
+                    Journal.unlock(driver, JournalMoment.OUT_OF_FUEL);
+                }
+            } else if (moving && getFuel() == 0 && tickCount % 20 == 0
+                    && getControllingPassenger() instanceof ServerPlayer pusher) {
+                Journal.unlock(pusher, JournalMoment.PUSHING);
             }
             // Long drives slowly wear it down.
             if (moving && isEngineRunning() && ++wearTicks >= WEAR_TICKS) {
@@ -522,6 +536,9 @@ public class KettenkradEntity extends Entity {
         level().playSound(null, spot, SoundEvents.WOOD_PLACE, SoundSource.BLOCKS, 1.0f, 1.0f);
         level().gameEvent(player, GameEvent.BLOCK_PLACE, spot);
         player.displayClientMessage(Component.translatable("message.glt.camp.set_up"), true);
+        if (player instanceof ServerPlayer serverPlayer) {
+            Journal.unlock(serverPlayer, JournalMoment.CAMP);
+        }
     }
 
     /** Puts a bedroll on the ground on the player's side, a bit behind the campfire spot. */

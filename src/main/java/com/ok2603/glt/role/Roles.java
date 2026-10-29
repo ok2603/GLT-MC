@@ -3,6 +3,8 @@ package com.ok2603.glt.role;
 import com.ok2603.glt.GLTMod;
 import com.ok2603.glt.network.RoleSyncPayload;
 import com.ok2603.glt.registry.ModAttachments;
+import com.ok2603.glt.registry.ModItems;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -51,6 +53,21 @@ public class Roles {
         applyAttributes(player);
         player.refreshDisplayName();
         player.refreshTabListName();
+        giveJournalIfNeeded(player);
+    }
+
+    /** The first time someone becomes Chito, she gets her journal. */
+    public static void giveJournalIfNeeded(ServerPlayer player) {
+        if (get(player) != Role.CHITO || player.getData(ModAttachments.GOT_JOURNAL)) {
+            return;
+        }
+        player.setData(ModAttachments.GOT_JOURNAL, true);
+        if (!player.getInventory().contains(new ItemStack(ModItems.CHITOS_JOURNAL.get()))) {
+            ItemStack journal = new ItemStack(ModItems.CHITOS_JOURNAL.get());
+            if (!player.getInventory().add(journal)) {
+                player.drop(journal, false);
+            }
+        }
     }
 
     /** True if any other player in the world is already playing this role. */
