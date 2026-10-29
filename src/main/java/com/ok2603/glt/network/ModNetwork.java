@@ -1,6 +1,7 @@
 package com.ok2603.glt.network;
 
 import com.ok2603.glt.GLTMod;
+import com.ok2603.glt.entity.SeatEntity;
 import com.ok2603.glt.registry.ModAttachments;
 import com.ok2603.glt.role.Role;
 import com.ok2603.glt.role.Roles;
@@ -29,6 +30,13 @@ public class ModNetwork {
                     Entity entity = context.player().level().getEntity(payload.entityId());
                     if (entity instanceof Player player) {
                         player.setData(ModAttachments.ROLE, payload.role());
+                    }
+                }));
+
+        registrar.playToServer(SitPayload.TYPE, SitPayload.STREAM_CODEC,
+                (payload, context) -> context.enqueueWork(() -> {
+                    if (context.player() instanceof ServerPlayer player) {
+                        SeatEntity.toggleSitting(player);
                     }
                 }));
 

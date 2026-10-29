@@ -2,6 +2,7 @@ package com.ok2603.glt.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.ok2603.glt.GLTMod;
+import com.ok2603.glt.network.SitPayload;
 import com.ok2603.glt.role.Role;
 import com.ok2603.glt.role.Roles;
 import net.minecraft.client.Minecraft;
@@ -20,8 +21,9 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderArmEvent;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
-/** Client-side game events: the H key, and drawing players as Chito or Yuuri. */
+/** Client-side game events: the H and Z keys, and drawing players as Chito or Yuuri. */
 @EventBusSubscriber(modid = GLTMod.MODID, value = Dist.CLIENT)
 public class ClientGameEvents {
     /** Built in ClientSetup once the game's renderers are ready. */
@@ -34,6 +36,11 @@ public class ClientGameEvents {
         while (ClientSetup.ROLE_MENU_KEY.consumeClick()) {
             if (mc.screen == null && mc.player != null) {
                 mc.setScreen(new RoleSelectScreen());
+            }
+        }
+        while (ClientSetup.SIT_KEY.consumeClick()) {
+            if (mc.screen == null && mc.player != null) {
+                PacketDistributor.sendToServer(SitPayload.INSTANCE);
             }
         }
     }

@@ -33,5 +33,13 @@
   "role.glt.yuuri.perk2": "Hits harder",
   "role.glt.yuuri.perk3": "Handles the cold better",
   "role.glt.yuuri.con1": "Gets hungry faster",
-  "role.glt.yuuri.con2": "Slow to speed up and steer the Kettenkrad"
+  "role.glt.yuuri.con2": "Slow to speed up and steer the Kettenkrad",
+  "key.glt.sit": "Sit down / stand up",
+  "hud.glt.kettenkrad.enter": "Enter: Right click",
+  "hud.glt.kettenkrad.camp": "Set up camp: Left click",
+  "hud.glt.kettenkrad.pick_up": "Pick up: Sneak + Left click",
+  "message.glt.camp.set_up": "Camp set up.",
+  "message.glt.camp.already": "There's already a campfire here.",
+  "message.glt.camp.no_room": "No room for a campfire on this side.",
+  "entity.glt.seat": "Seat"
 }

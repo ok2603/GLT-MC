@@ -49,7 +49,16 @@ There are no monsters in the Overworld. Zombies, creepers, skeletons, phantoms, 
 - Right-click it to get on. The first player drives, a second player sits in the back. Anyone can drive, but Chito is faster and Yuuri is clumsier.
 - **W / S** drive forward and back, **A / D** turn. **Shift** gets off.
 - Sneak + right-click shows the fuel left.
-- Hit it a few times to pick it back up.
+- When it's stopped, look at it to see what you can do. **Left-click** sets up camp: a campfire appears on the side of the Kettenkrad you're standing on (one camp at a time).
+- **Sneak + left-click** a few times to pick it back up.
+
+### Sitting
+
+Press **Z** to sit down on the ground, and Z (or Shift) again to stand up. Nice by the campfire.
+
+### Editing the Kettenkrad model
+
+The Kettenkrad's model and texture are in `blockbench/kettenkrad.bbmodel`. Open it in Blockbench, change it, then use File → Export → Java Entity (Mojmaps) and send the exported code and texture over to be put into `client/KettenkradModel.java` and `textures/entity/kettenkrad.png`.
 
 ## How to try it
 
