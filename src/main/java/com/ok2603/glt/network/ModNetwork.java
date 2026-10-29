@@ -1,6 +1,7 @@
 package com.ok2603.glt.network;
 
 import com.ok2603.glt.GLTMod;
+import com.ok2603.glt.entity.KettenkradEntity;
 import com.ok2603.glt.entity.SeatEntity;
 import com.ok2603.glt.registry.ModAttachments;
 import com.ok2603.glt.role.Role;
@@ -38,6 +39,15 @@ public class ModNetwork {
                 (payload, context) -> context.enqueueWork(() -> {
                     if (context.player() instanceof ServerPlayer player) {
                         SeatEntity.toggleSitting(player);
+                    }
+                }));
+
+        registrar.playToServer(KettenkradCrashPayload.TYPE, KettenkradCrashPayload.STREAM_CODEC,
+                (payload, context) -> context.enqueueWork(() -> {
+                    // Only the driver's report counts, and one crash can't do more than 30% damage.
+                    if (context.player().level().getEntity(payload.entityId()) instanceof KettenkradEntity kettenkrad
+                            && kettenkrad.getControllingPassenger() == context.player()) {
+                        kettenkrad.damageCondition(Math.min(payload.damage(), 30));
                     }
                 }));
 

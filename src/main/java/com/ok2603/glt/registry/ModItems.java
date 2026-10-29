@@ -80,6 +80,10 @@ public class ModItems {
     public static final DeferredItem<BlockItem> RUSTED_PLATE = ITEMS.register("rusted_plate",
             () -> new BlockItem(ModBlocks.RUSTED_PLATE.get(), new Item.Properties()));
 
+    /** Lay it out next to the Kettenkrad (or anywhere) and sleep on it. */
+    public static final DeferredItem<BlockItem> BEDROLL = ITEMS.register("bedroll",
+            () -> new BlockItem(ModBlocks.BEDROLL.get(), new Item.Properties().stacksTo(1)));
+
     // --- Vehicles ---
 
     /** The Kettenkrad. Right-click the ground to place it. */

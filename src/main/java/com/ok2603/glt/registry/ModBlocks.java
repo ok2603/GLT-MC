@@ -1,12 +1,16 @@
 package com.ok2603.glt.registry;
 
 import com.ok2603.glt.GLTMod;
+import com.ok2603.glt.block.BedrollBlock;
 import com.ok2603.glt.block.LootContainerBlock;
 import com.ok2603.glt.block.TankHatchBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -30,4 +34,10 @@ public class ModBlocks {
     public static final DeferredBlock<Block> RUSTED_PLATE = BLOCKS.register("rusted_plate",
             () -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK)
                     .mapColor(MapColor.TERRACOTTA_BROWN).strength(3.0f, 6.0f)));
+
+    /** A blanket to sleep on, next to the Kettenkrad or anywhere else. */
+    public static final DeferredBlock<BedrollBlock> BEDROLL = BLOCKS.register("bedroll",
+            () -> new BedrollBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN)
+                    .sound(SoundType.WOOL).strength(0.2f).noOcclusion().ignitedByLava()
+                    .pushReaction(PushReaction.DESTROY).instrument(NoteBlockInstrument.GUITAR)));
 }

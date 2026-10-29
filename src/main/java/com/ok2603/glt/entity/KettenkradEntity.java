@@ -1,9 +1,22 @@
 package com.ok2603.glt.entity;
 
+import com.ok2603.glt.registry.ModBlocks;
 import com.ok2603.glt.registry.ModItems;
 import com.ok2603.glt.role.Role;
 import com.ok2603.glt.role.Roles;
+import com.ok2603.glt.network.KettenkradCrashPayload;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.Containers;
+import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.level.block.LightBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -27,6 +40,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
@@ -39,7 +53,12 @@ import org.jetbrains.annotations.Nullable;
  *   Chito drives faster; Yuuri is slow to speed up and to steer (see Roles).
  * - W/S to drive forward and back, A/D to turn. Shift to get off.
  * - It only drives while it has fuel. Right-click it with a Fuel Canister to refuel.
- * - Sneak + right-click shows how much fuel is left.
+ *   Out of fuel, Yuuri can still push it along slowly.
+ * - The headlight shines while the engine runs.
+ * - Sneak + right-click opens its storage (27 slots). It's your whole home on the road.
+ * - Crashes, big drops and long drives wear it down. Chito repairs it with Scrap Parts.
+ *   Below 25% it smokes and slows down; at 0% it won't drive at all.
+ * - Right-click it with a Bedroll to lay the bedroll out next to it.
  * - When it's stopped, left-click it to set up camp: a campfire appears on the side you're standing on.
  * - Sneak + left-click a few times to pick it back up as an item.
  */
@@ -53,8 +72,29 @@ public class KettenkradEntity extends Entity {
     private static final float ACCELERATION = 0.02f;
     private static final float TURN_SPEED = 4.0f;
 
+    /** Condition from 0 (broken) to MAX_CONDITION (like new). */
+    public static final int MAX_CONDITION = 100;
+    private static final int REPAIR_PER_SCRAP = 20;
+    /** Driving this many ticks wears the Kettenkrad down by 1%. */
+    private static final int WEAR_TICKS = 20 * 90;
+    /** Below this condition it smokes and loses speed. */
+    public static final int POOR_CONDITION = 25;
+    /** How fast Yuuri can push it with no fuel, in blocks per tick. */
+    private static final float PUSH_SPEED = 0.06f;
+    /** How far ahead the headlight shines, in blocks. */
+    private static final double HEADLIGHT_DISTANCE = 5.0;
+
     private static final EntityDataAccessor<Integer> FUEL =
             SynchedEntityData.defineId(KettenkradEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> CONDITION =
+            SynchedEntityData.defineId(KettenkradEntity.class, EntityDataSerializers.INT);
+
+    private final KettenkradStorage storage = new KettenkradStorage(this);
+    /** Where the invisible light block of the headlight currently is. */
+    @Nullable
+    private BlockPos headlightPos;
+    private int wearTicks;
+    private int crashCooldown;
 
     private float speed;
     private float yawDelta;
@@ -80,22 +120,63 @@ public class KettenkradEntity extends Entity {
 
     /** The engine runs (and gives off heat) while someone is driving and there is fuel. */
     public boolean isEngineRunning() {
-        return getFuel() > 0 && getControllingPassenger() != null;
+        return getFuel() > 0 && !isBroken() && getControllingPassenger() != null;
+    }
+
+    // ---------- Condition ----------
+
+    public int getCondition() {
+        return this.entityData.get(CONDITION);
+    }
+
+    public void setCondition(int condition) {
+        this.entityData.set(CONDITION, Mth.clamp(condition, 0, MAX_CONDITION));
+    }
+
+    public boolean isBroken() {
+        return getCondition() <= 0;
+    }
+
+    /** Wears the Kettenkrad down (server only). */
+    public void damageCondition(int amount) {
+        if (amount <= 0 || level().isClientSide) {
+            return;
+        }
+        boolean wasBroken = isBroken();
+        setCondition(getCondition() - amount);
+        playSound(SoundEvents.ANVIL_LAND, 0.4f, 1.6f);
+        if (!wasBroken && isBroken() && getControllingPassenger() instanceof Player driver) {
+            driver.displayClientMessage(Component.translatable("message.glt.kettenkrad.broken"), true);
+        }
+    }
+
+    public KettenkradStorage getStorage() {
+        return storage;
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(FUEL, 0);
+        builder.define(CONDITION, MAX_CONDITION);
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         setFuel(tag.getInt("Fuel"));
+        setCondition(tag.contains("Condition") ? tag.getInt("Condition") : MAX_CONDITION);
+        storage.removeAllItems();
+        storage.fromTag(tag.getList("Storage", Tag.TAG_COMPOUND), registryAccess());
+        headlightPos = NbtUtils.readBlockPos(tag, "Headlight").orElse(null);
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
         tag.putInt("Fuel", getFuel());
+        tag.putInt("Condition", getCondition());
+        tag.put("Storage", storage.createTag(registryAccess()));
+        if (headlightPos != null) {
+            tag.put("Headlight", NbtUtils.writeBlockPos(headlightPos));
+        }
     }
 
     // ---------- Riding ----------
@@ -119,11 +200,40 @@ public class KettenkradEntity extends Entity {
             return InteractionResult.sidedSuccess(level().isClientSide);
         }
 
-        // Sneak + right-click: check the fuel gauge.
+        // Repair with Scrap Parts. That's Chito's job.
+        if (stack.is(ModItems.SCRAP_PARTS.get())) {
+            if (getCondition() >= MAX_CONDITION) {
+                return InteractionResult.PASS;
+            }
+            if (!level().isClientSide) {
+                if (!Roles.canRepair(player)) {
+                    player.displayClientMessage(Component.translatable("message.glt.kettenkrad.cant_repair"), true);
+                    return InteractionResult.CONSUME;
+                }
+                setCondition(getCondition() + REPAIR_PER_SCRAP);
+                if (!player.getAbilities().instabuild) {
+                    stack.shrink(1);
+                }
+                playSound(SoundEvents.ANVIL_USE, 0.5f, 1.4f);
+                player.displayClientMessage(Component.translatable("message.glt.kettenkrad.repaired", getCondition()), true);
+            }
+            return InteractionResult.sidedSuccess(level().isClientSide);
+        }
+
+        // Lay a bedroll out next to it.
+        if (stack.is(ModItems.BEDROLL.get())) {
+            if (!level().isClientSide) {
+                layOutBedroll(player, stack);
+            }
+            return InteractionResult.sidedSuccess(level().isClientSide);
+        }
+
+        // Sneak + right-click: open the storage.
         if (player.isSecondaryUseActive()) {
             if (!level().isClientSide) {
-                int percent = getFuel() * 100 / MAX_FUEL;
-                player.displayClientMessage(Component.translatable("message.glt.kettenkrad.fuel", percent), true);
+                player.openMenu(new SimpleMenuProvider(
+                        (id, inventory, p) -> ChestMenu.threeRows(id, inventory, storage),
+                        Component.translatable("container.glt.kettenkrad")));
             }
             return InteractionResult.sidedSuccess(level().isClientSide);
         }
@@ -180,6 +290,16 @@ public class KettenkradEntity extends Entity {
         if (damage > 0) {
             damage = Math.max(0, damage - 1);
         }
+        if (crashCooldown > 0) {
+            crashCooldown--;
+        }
+
+        // A worn-out engine smokes.
+        if (level().isClientSide && getCondition() < POOR_CONDITION && random.nextInt(isBroken() ? 3 : 6) == 0) {
+            float yawRad = getYRot() * Mth.DEG_TO_RAD;
+            level().addParticle(isBroken() ? ParticleTypes.LARGE_SMOKE : ParticleTypes.SMOKE,
+                    getX() - Mth.sin(yawRad) * 0.6, getY() + 0.9, getZ() + Mth.cos(yawRad) * 0.6, 0, 0.03, 0);
+        }
 
         if (isControlledByLocalInstance()) {
             drive();
@@ -195,9 +315,19 @@ public class KettenkradEntity extends Entity {
             boolean chitoSaves = getControllingPassenger() instanceof Player driver
                     && Roles.get(driver) == Role.CHITO
                     && tickCount % Roles.CHITO_FUEL_SAVING == 0;
-            if (movedX * movedX + movedZ * movedZ > 1.0e-4 && !chitoSaves) {
+            boolean moving = movedX * movedX + movedZ * movedZ > 1.0e-4;
+            if (moving && isEngineRunning() && !chitoSaves) {
                 setFuel(getFuel() - 1);
             }
+            // Long drives slowly wear it down.
+            if (moving && isEngineRunning() && ++wearTicks >= WEAR_TICKS) {
+                wearTicks = 0;
+                setCondition(getCondition() - 1);
+            }
+        }
+
+        if (!level().isClientSide && tickCount % 4 == 0) {
+            updateHeadlight();
         }
     }
 
@@ -208,14 +338,25 @@ public class KettenkradEntity extends Entity {
         float acceleration = ACCELERATION;
         float turnSpeed = TURN_SPEED;
         if (getControllingPassenger() instanceof Player driver) {
-            if (getFuel() > 0) {
+            if (getFuel() > 0 && !isBroken()) {
                 forwardInput = driver.zza; // W = positive, S = negative
                 turnInput = driver.xxa;    // A = positive, D = negative
+                // Chito drives faster; Yuuri is slow to speed up and to steer.
+                maxSpeed += Roles.extraDrivingSpeed(driver);
+                acceleration *= Roles.accelerationMultiplier(driver);
+                turnSpeed *= Roles.steeringMultiplier(driver);
+                // A worn-out engine can't reach full speed.
+                if (getCondition() < POOR_CONDITION) {
+                    maxSpeed *= 0.6f;
+                }
+            } else if (Roles.canPush(driver)) {
+                // No fuel (or broken): Yuuri gets off the seat and pushes. Slowly.
+                forwardInput = Math.max(0, driver.zza);
+                turnInput = driver.xxa;
+                maxSpeed = PUSH_SPEED;
+                acceleration = 0.01f;
+                turnSpeed *= 0.4f;
             }
-            // Chito drives faster; Yuuri is slow to speed up and to steer.
-            maxSpeed += Roles.extraDrivingSpeed(driver);
-            acceleration *= Roles.accelerationMultiplier(driver);
-            turnSpeed *= Roles.steeringMultiplier(driver);
         }
 
         // Speed up, slow down, or roll to a stop.
@@ -245,10 +386,67 @@ public class KettenkradEntity extends Entity {
         setDeltaMovement(motionX, motionY, motionZ);
         move(MoverType.SELF, getDeltaMovement());
 
-        // Bumping into a wall stops it.
+        // Bumping into a wall stops it. A hard crash damages it.
         if (horizontalCollision) {
+            if (Math.abs(speed) > 0.22f && crashCooldown == 0 && level().isClientSide) {
+                crashCooldown = 20;
+                PacketDistributor.sendToServer(new KettenkradCrashPayload(getId(), Math.round(Math.abs(speed) * 20)));
+            }
             speed *= 0.5f;
         }
+    }
+
+    /** Big drops hurt the Kettenkrad (the client that drives it reports this to the server). */
+    @Override
+    public boolean causeFallDamage(float fallDistance, float multiplier, DamageSource source) {
+        if (fallDistance > 4 && level().isClientSide && isControlledByLocalInstance()) {
+            PacketDistributor.sendToServer(new KettenkradCrashPayload(getId(), Math.round((fallDistance - 4) * 4)));
+        }
+        return false;
+    }
+
+    // ---------- Headlight ----------
+
+    /** Moves the invisible light block in front of the Kettenkrad while the engine runs. */
+    private void updateHeadlight() {
+        BlockPos target = null;
+        if (isEngineRunning()) {
+            float yawRad = getYRot() * Mth.DEG_TO_RAD;
+            BlockPos ahead = BlockPos.containing(getX() - Mth.sin(yawRad) * HEADLIGHT_DISTANCE, getY() + 1,
+                    getZ() + Mth.cos(yawRad) * HEADLIGHT_DISTANCE);
+            for (BlockPos candidate : new BlockPos[]{ahead, ahead.above(), ahead.below()}) {
+                if (candidate.equals(headlightPos) || level().getBlockState(candidate).isAir()) {
+                    target = candidate;
+                    break;
+                }
+            }
+        }
+        if (target != null && target.equals(headlightPos)) {
+            return;
+        }
+        removeHeadlight();
+        if (target != null) {
+            level().setBlock(target, Blocks.LIGHT.defaultBlockState().setValue(LightBlock.LEVEL, 14), 3);
+            headlightPos = target;
+        }
+    }
+
+    private void removeHeadlight() {
+        if (headlightPos != null) {
+            BlockState state = level().getBlockState(headlightPos);
+            if (state.is(Blocks.LIGHT)) {
+                level().setBlock(headlightPos, Blocks.AIR.defaultBlockState(), 3);
+            }
+            headlightPos = null;
+        }
+    }
+
+    @Override
+    public void remove(RemovalReason reason) {
+        if (!level().isClientSide) {
+            removeHeadlight();
+        }
+        super.remove(reason);
     }
 
     /** Tracks can climb up one full block. */
@@ -326,6 +524,28 @@ public class KettenkradEntity extends Entity {
         player.displayClientMessage(Component.translatable("message.glt.camp.set_up"), true);
     }
 
+    /** Puts a bedroll on the ground on the player's side, a bit behind the campfire spot. */
+    private void layOutBedroll(Player player, ItemStack stack) {
+        float yawRad = getYRot() * Mth.DEG_TO_RAD;
+        Vec3 right = new Vec3(-Mth.cos(yawRad), 0, -Mth.sin(yawRad));
+        Vec3 forward = new Vec3(-Mth.sin(yawRad), 0, Mth.cos(yawRad));
+        double side = player.position().subtract(position()).dot(right) >= 0 ? 1 : -1;
+        Vec3 spotVec = position().add(right.scale(side * 1.6)).add(forward.scale(-1.6));
+        BlockPos spot = findCampSpot(BlockPos.containing(spotVec));
+        if (spot == null) {
+            player.displayClientMessage(Component.translatable("message.glt.bedroll.no_room"), true);
+            return;
+        }
+        // The pillow end points toward the Kettenkrad's front.
+        level().setBlock(spot, ModBlocks.BEDROLL.get().defaultBlockState()
+                .setValue(HorizontalDirectionalBlock.FACING, Direction.fromYRot(getYRot())), 3);
+        level().playSound(null, spot, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 1.0f, 1.0f);
+        level().gameEvent(player, GameEvent.BLOCK_PLACE, spot);
+        if (!player.getAbilities().instabuild) {
+            stack.shrink(1);
+        }
+    }
+
     /** Finds a free spot with solid ground near the given position (a little up or down is fine). */
     @Nullable
     private BlockPos findCampSpot(BlockPos start) {
@@ -367,8 +587,17 @@ public class KettenkradEntity extends Entity {
 
         boolean creative = source.getEntity() instanceof Player player && player.getAbilities().instabuild;
         if (creative || damage > 40) {
-            if (!creative && level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-                spawnAtLocation(ModItems.KETTENKRAD.get());
+            if (level().getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+                if (!creative) {
+                    // The item remembers the fuel and condition.
+                    ItemStack item = new ItemStack(ModItems.KETTENKRAD.get());
+                    CompoundTag saved = new CompoundTag();
+                    saved.putInt("Fuel", getFuel());
+                    saved.putInt("Condition", getCondition());
+                    item.set(DataComponents.CUSTOM_DATA, CustomData.of(saved));
+                    spawnAtLocation(item);
+                }
+                Containers.dropContents(level(), this, storage);
             }
             discard();
         }
