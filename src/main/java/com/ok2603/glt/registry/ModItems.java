@@ -2,6 +2,7 @@ package com.ok2603.glt.registry;
 
 import com.ok2603.glt.GLTMod;
 import com.ok2603.glt.item.BeerItem;
+import com.ok2603.glt.item.ChitosJournalItem;
 import com.ok2603.glt.item.KettenkradItem;
 import com.ok2603.glt.item.OldNoteItem;
 import com.ok2603.glt.item.WarmFoodItem;
@@ -59,9 +60,9 @@ public class ModItems {
     public static final DeferredItem<Item> FUEL_CANISTER = ITEMS.registerSimpleItem("fuel_canister",
             new Item.Properties().stacksTo(16));
 
-    /** Chito's journal. For now a plain item; later it will open a writable book. */
-    public static final DeferredItem<Item> CHITOS_JOURNAL = ITEMS.registerSimpleItem("chitos_journal",
-            new Item.Properties().stacksTo(1));
+    /** Chito's journal: fills itself in with the moments of the trip. Chito can write in it too. */
+    public static final DeferredItem<ChitosJournalItem> CHITOS_JOURNAL = ITEMS.registerItem("chitos_journal",
+            ChitosJournalItem::new, new Item.Properties().stacksTo(1));
 
     /** Bits of old machines. Used to repair the Kettenkrad and to build things. */
     public static final DeferredItem<Item> SCRAP_PARTS = ITEMS.registerSimpleItem("scrap_parts",

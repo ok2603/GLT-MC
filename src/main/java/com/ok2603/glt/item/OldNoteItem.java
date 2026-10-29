@@ -1,6 +1,9 @@
 package com.ok2603.glt.item;
 
+import com.ok2603.glt.journal.Journal;
+import com.ok2603.glt.journal.JournalMoment;
 import com.ok2603.glt.registry.ModDataComponents;
+import net.minecraft.server.level.ServerPlayer;
 import com.ok2603.glt.role.Role;
 import com.ok2603.glt.role.Roles;
 import net.minecraft.ChatFormatting;
@@ -56,6 +59,9 @@ public class OldNoteItem extends Item {
             } else {
                 player.displayClientMessage(Component.translatable("note.glt.old_note." + id)
                         .withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC), false);
+                if (player instanceof ServerPlayer serverPlayer) {
+                    Journal.unlock(serverPlayer, JournalMoment.OLD_NOTE);
+                }
             }
         }
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);

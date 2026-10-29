@@ -24,10 +24,10 @@ public class RoleSelectScreen extends Screen {
     private static final int RED = 0xE87070;
     private static final int GRAY = 0xA0A0A0;
 
-    private static final String[] CHITO_PERKS = {"perk1", "perk2"};
+    private static final String[] CHITO_PERKS = {"perk1", "perk2", "perk3", "perk4"};
     private static final String[] CHITO_CONS = {"con1", "con2", "con3"};
-    private static final String[] YUURI_PERKS = {"perk1", "perk2", "perk3"};
-    private static final String[] YUURI_CONS = {"con1", "con2"};
+    private static final String[] YUURI_PERKS = {"perk1", "perk2", "perk3", "perk4", "perk5"};
+    private static final String[] YUURI_CONS = {"con1", "con2", "con3"};
 
     public RoleSelectScreen() {
         super(Component.translatable("screen.glt.role.title"));

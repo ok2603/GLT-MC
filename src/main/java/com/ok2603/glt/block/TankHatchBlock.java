@@ -1,7 +1,10 @@
 package com.ok2603.glt.block;
 
 import com.mojang.serialization.MapCodec;
+import com.ok2603.glt.journal.Journal;
+import com.ok2603.glt.journal.JournalMoment;
 import com.ok2603.glt.registry.ModItems;
+import net.minecraft.server.level.ServerPlayer;
 import com.ok2603.glt.role.Role;
 import com.ok2603.glt.role.Roles;
 import net.minecraft.network.chat.Component;
@@ -40,6 +43,9 @@ public class TankHatchBlock extends LootContainerBlock {
             }
             player.level().playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.8f, 1.2f);
             player.displayClientMessage(Component.translatable("message.glt.tank.chocolate_found"), false);
+            if (player instanceof ServerPlayer serverPlayer) {
+                Journal.unlock(serverPlayer, JournalMoment.TANK_CHOCOLATE);
+            }
         } else {
             player.displayClientMessage(Component.translatable("message.glt.tank.rattle"), true);
         }

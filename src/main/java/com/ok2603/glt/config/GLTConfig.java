@@ -23,6 +23,7 @@ public class GLTConfig {
     public static final ModConfigSpec.DoubleValue OUTDOOR_CROP_GROWTH;
     public static final ModConfigSpec.BooleanValue AUTO_ROLES;
     public static final ModConfigSpec.BooleanValue CHARACTER_NAMES;
+    public static final ModConfigSpec.BooleanValue JOURNAL_NEEDS_BOTH;
     public static final ModConfigSpec.BooleanValue VANILLA_CHEST_LOOT;
     public static final ModConfigSpec.DoubleValue ROLE_LOOT_CHANCE;
 
@@ -49,6 +50,10 @@ public class GLTConfig {
         CHARACTER_NAMES = builder
                 .comment("Show players as \"Chito\" and \"Yuuri\" in chat, the player list and name tags.")
                 .define("characterNames", true);
+        JOURNAL_NEEDS_BOTH = builder
+                .comment("Some journal moments (the stars, camping, beer...) only count when both girls are close together."
+                        + " Single player is never blocked by this.")
+                .define("journalNeedsBoth", true);
         builder.pop();
 
         builder.push("loot");

@@ -3,6 +3,8 @@ package com.ok2603.glt.network;
 import com.ok2603.glt.GLTMod;
 import com.ok2603.glt.entity.KettenkradEntity;
 import com.ok2603.glt.entity.SeatEntity;
+import com.ok2603.glt.client.ClientPayloads;
+import com.ok2603.glt.journal.Journal;
 import com.ok2603.glt.registry.ModAttachments;
 import com.ok2603.glt.role.Role;
 import com.ok2603.glt.role.Roles;
@@ -48,6 +50,16 @@ public class ModNetwork {
                     if (context.player().level().getEntity(payload.entityId()) instanceof KettenkradEntity kettenkrad
                             && kettenkrad.getControllingPassenger() == context.player()) {
                         kettenkrad.damageCondition(Math.min(payload.damage(), 30));
+                    }
+                }));
+
+        registrar.playToClient(JournalContentsPayload.TYPE, JournalContentsPayload.STREAM_CODEC,
+                (payload, context) -> context.enqueueWork(() -> ClientPayloads.openJournal(payload)));
+
+        registrar.playToServer(JournalWritePayload.TYPE, JournalWritePayload.STREAM_CODEC,
+                (payload, context) -> context.enqueueWork(() -> {
+                    if (context.player() instanceof ServerPlayer player) {
+                        Journal.writePage(player, payload.text());
                     }
                 }));
 

@@ -19,6 +19,10 @@ public class ModAttachments {
     public static final Supplier<AttachmentType<Float>> BODY_HEAT = ATTACHMENT_TYPES.register("body_heat",
             () -> AttachmentType.builder(() -> BodyHeat.MAX).serialize(Codec.FLOAT).build());
 
+    /** Whether this player has already been given Chito's journal. */
+    public static final Supplier<AttachmentType<Boolean>> GOT_JOURNAL = ATTACHMENT_TYPES.register("got_journal",
+            () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build());
+
     /** Whether the player is Chito or Yuuri. Kept when you die. */
     public static final Supplier<AttachmentType<Role>> ROLE = ATTACHMENT_TYPES.register("role",
             () -> AttachmentType.builder(() -> Role.NONE).serialize(Role.CODEC).copyOnDeath().build());

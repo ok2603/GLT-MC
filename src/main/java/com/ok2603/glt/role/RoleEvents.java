@@ -28,6 +28,7 @@ public class RoleEvents {
             }
             Roles.sync(player);
             Roles.applyAttributes(player);
+            Roles.giveJournalIfNeeded(player);
             player.refreshDisplayName();
             player.refreshTabListName();
             if (Roles.get(player) == Role.NONE) {
