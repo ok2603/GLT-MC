@@ -23,12 +23,12 @@ All items are in the **Girls' Last Tour** creative tab.
 
 ### Chito and Yuuri
 
-Press **H** to open the character menu and choose who you play as. Your player turns into that character (placeholder look for now), and you get their perks and cons. The key can be changed in Options → Controls.
+Press **H** to open the character menu and choose who you play as. Your player turns into that character, and you get their perks and cons. The key can be changed in Options → Controls.
 
 | | Chito, the thinker | Yuuri, the strong one |
 | --- | --- | --- |
-| Perks | Only one who can drive the Kettenkrad. Uses 25% less fuel | Breaks blocks 30% faster. Hits 30% harder. Gets cold 25% slower |
-| Cons | Breaks blocks 25% slower. Hits 30% softer. Gets cold 15% faster | Gets hungry faster. Can't drive |
+| Perks | Drives the Kettenkrad faster (+1 block/second). Uses 25% less fuel | Breaks blocks 30% faster. Hits 30% harder. Gets cold 25% slower |
+| Cons | Breaks blocks 25% slower. Hits 30% softer. Gets cold 15% faster | Gets hungry faster. Speeds up the Kettenkrad at 40% and steers it at 60% of normal |
 
 Standing next to each other slows the cold for both. All role numbers are at the top of `role/Roles.java`. Players who haven't picked a role play normally.
 
@@ -46,7 +46,7 @@ There are no monsters in the Overworld. Zombies, creepers, skeletons, phantoms, 
 
 - Right-click the ground with the Kettenkrad item to place it.
 - Right-click it with a **Fuel Canister** to refuel. It won't move without fuel.
-- Right-click it to get on. The first player drives, a second player sits in the back.
+- Right-click it to get on. The first player drives, a second player sits in the back. Anyone can drive, but Chito is faster and Yuuri is clumsier.
 - **W / S** drive forward and back, **A / D** turn. **Shift** gets off.
 - Sneak + right-click shows the fuel left.
 - Hit it a few times to pick it back up.
@@ -76,5 +76,5 @@ To get a `.jar` you can drop into a normal NeoForge `mods` folder, run `./gradle
   - `cold/NoMonsters.java` — stops monsters from spawning
   - `role/` — Chito and Yuuri's roles, perks and cons
   - `client/` — the Kettenkrad's 3D model, the thermometer, the H menu, and Chito/Yuuri's look
-- `src/main/resources/assets/glt/textures/entity/player/` — Chito's and Yuuri's placeholder skins
+- `src/main/resources/assets/glt/textures/entity/player/` — Chito's and Yuuri's skins
 - `src/main/resources/assets/glt/` — textures, models and names (`lang/en_us.json`)

@@ -16,8 +16,8 @@ import net.neoforged.neoforge.network.PacketDistributor;
 /**
  * Chito and Yuuri's perks and cons. All the numbers live here.
  *
- * Chito: the only one who can drive, saves fuel. Weaker, and gets cold faster.
- * Yuuri: stronger and handles the cold better. Can't drive, and gets hungry faster.
+ * Chito: the better driver (faster, saves fuel). Weaker, and gets cold faster.
+ * Yuuri: stronger and handles the cold better. Clumsy driver, and gets hungry faster.
  */
 public class Roles {
     // --- Chito ---
@@ -26,12 +26,16 @@ public class Roles {
     public static final double CHITO_ATTACK = -0.30;           // hits 30% softer
     /** Chito skips burning fuel 1 tick in this many, so fuel lasts 25% longer. */
     public static final int CHITO_FUEL_SAVING = 4;
+    /** Extra Kettenkrad top speed for Chito, in blocks per tick (0.05 = 1 block per second). */
+    public static final float CHITO_EXTRA_SPEED = 0.05f;
 
     // --- Yuuri ---
     public static final float YUURI_COLD_MULTIPLIER = 0.75f;   // gets cold 25% slower
     public static final double YUURI_MINING = 0.30;            // breaks blocks 30% faster
     public static final double YUURI_ATTACK = 0.30;            // hits 30% harder
     public static final float YUURI_EXTRA_HUNGER = 0.0025f;    // extra exhaustion per tick
+    public static final float YUURI_ACCELERATION = 0.4f;       // speeds up the Kettenkrad at 40% of the normal rate
+    public static final float YUURI_STEERING = 0.6f;           // turns the Kettenkrad at 60% of the normal rate
 
     private static final ResourceLocation MINING_ID = ResourceLocation.fromNamespaceAndPath(GLTMod.MODID, "role_mining");
     private static final ResourceLocation ATTACK_ID = ResourceLocation.fromNamespaceAndPath(GLTMod.MODID, "role_attack");
@@ -52,9 +56,19 @@ public class Roles {
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(player, new RoleSyncPayload(player.getId(), get(player)));
     }
 
-    /** Only Chito can drive. Players who haven't picked a role can drive too. */
-    public static boolean canDrive(Player player) {
-        return get(player) != Role.YUURI;
+    /** Extra top speed this driver gets on the Kettenkrad. */
+    public static float extraDrivingSpeed(Player driver) {
+        return get(driver) == Role.CHITO ? CHITO_EXTRA_SPEED : 0f;
+    }
+
+    /** How fast this driver speeds the Kettenkrad up (1.0 = normal). */
+    public static float accelerationMultiplier(Player driver) {
+        return get(driver) == Role.YUURI ? YUURI_ACCELERATION : 1f;
+    }
+
+    /** How fast this driver can steer the Kettenkrad (1.0 = normal). */
+    public static float steeringMultiplier(Player driver) {
+        return get(driver) == Role.YUURI ? YUURI_STEERING : 1f;
     }
 
     public static float coldMultiplier(Player player) {
