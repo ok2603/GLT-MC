@@ -63,6 +63,9 @@ public class ModNetwork {
                     }
                 }));
 
+        registrar.playToClient(EndingPayload.TYPE, EndingPayload.STREAM_CODEC,
+                (payload, context) -> context.enqueueWork(ClientPayloads::showEnding));
+
         registrar.playToServer(ChooseRolePayload.TYPE, ChooseRolePayload.STREAM_CODEC,
                 (payload, context) -> context.enqueueWork(() -> {
                     if (context.player() instanceof ServerPlayer player && payload.role() != Role.NONE) {

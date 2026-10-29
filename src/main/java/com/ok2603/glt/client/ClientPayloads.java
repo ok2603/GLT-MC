@@ -11,4 +11,8 @@ public class ClientPayloads {
     public static void openJournal(JournalContentsPayload payload) {
         Minecraft.getInstance().setScreen(new JournalScreen(payload.entries(), payload.canWrite()));
     }
+
+    public static void showEnding() {
+        Minecraft.getInstance().setScreen(new EndingScreen());
+    }
 }

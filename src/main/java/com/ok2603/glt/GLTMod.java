@@ -13,6 +13,7 @@ import com.ok2603.glt.registry.ModItems;
 import com.ok2603.glt.registry.ModLootModifiers;
 import com.ok2603.glt.registry.ModMenus;
 import com.ok2603.glt.registry.ModSounds;
+import com.ok2603.glt.registry.ModEffects;
 import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -41,6 +42,7 @@ public class GLTMod {
         ModFeatures.FEATURES.register(modEventBus);
         ModEntities.ENTITY_TYPES.register(modEventBus);
         ModSounds.SOUNDS.register(modEventBus);
+        ModEffects.EFFECTS.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
         ModCreativeTabs.CREATIVE_TABS.register(modEventBus);
 

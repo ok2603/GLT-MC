@@ -108,6 +108,17 @@ Legend: ✅ already merged · 🔨 planned, with the PR it lands in.
   It slowly restocks the pool.
 - Nobody can be hurt by players (this is a peaceful story).
 
+## Co-op polish and the ending (PR 8)
+
+- **Lonely** (effect): farther than `together.lonelyDistance` (48) from everyone else for `lonelyDelay` (60 s).
+  Heat sources warm you at 50%. Gone as soon as you're close again. Off in single player.
+- **Sharing food**: right-click a player with food. They eat it (with all its effects) plus 50% extra hunger.
+- **Nibbling**: every 5 minutes, a hungry Yuuri within 6 blocks of a Kettenkrad has a 30% chance to eat
+  one of its ration bars (config `together.yuuriNibbles`).
+- **The ending** (Last City only): everyone online stands within 8 blocks of the summit stone on the top
+  floor. The last journal entry is written and an ending screen with credits plays, once per world.
+  In vanilla worlds there is no ending (there is no top to reach).
+
 ## PR order
 
 1. **Scavenging**: config file, loot in vanilla and new crates, supply crate + wrecked tank blocks, scrap parts, old notes, beer, no-farming, auto roles, role loot bonuses.

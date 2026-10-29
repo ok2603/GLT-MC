@@ -3,6 +3,7 @@ package com.ok2603.glt.cold;
 import com.ok2603.glt.city.CityLayout;
 import com.ok2603.glt.city.LastCity;
 import com.ok2603.glt.config.GLTConfig;
+import com.ok2603.glt.registry.ModEffects;
 import com.ok2603.glt.GLTMod;
 import com.ok2603.glt.entity.KettenkradEntity;
 import com.ok2603.glt.network.BodyHeatPayload;
@@ -66,7 +67,8 @@ public class BodyHeat {
     private static final float ENGINE_GAIN = 1.0f;         // next to a running Kettenkrad
     private static final float HOT_BIOME_GAIN = 0.5f;      // deserts, savannas, the Nether
     private static final float BATH_GAIN = 8.0f;           // sitting in water warmed by a leaking hot pipe
-    private static final float WASHED_COAT_BONUS = 0.15f;  // a freshly washed coat is extra warm
+    private static final float WASHED_COAT_BONUS = 0.15f;
+    private static final float LONELY_WARMTH = 0.5f;       // Lonely: heat sources work half as well  // a freshly washed coat is extra warm
 
     private static final int HEAT_SOURCE_RANGE = 3;
 
@@ -213,6 +215,10 @@ public class BodyHeat {
                 player.getBoundingBox().inflate(HEAT_SOURCE_RANGE), KettenkradEntity::isEngineRunning).isEmpty();
         if (nearEngine) {
             gain += ENGINE_GAIN;
+        }
+        // Warmth doesn't help as much when you're alone.
+        if (player.hasEffect(ModEffects.LONELY)) {
+            gain *= LONELY_WARMTH;
         }
         return gain;
     }
