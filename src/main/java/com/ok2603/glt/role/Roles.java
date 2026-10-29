@@ -49,6 +49,35 @@ public class Roles {
         player.setData(ModAttachments.ROLE, role);
         sync(player);
         applyAttributes(player);
+        player.refreshDisplayName();
+        player.refreshTabListName();
+    }
+
+    /** True if any other player in the world is already playing this role. */
+    public static boolean isTaken(ServerPlayer player, Role role) {
+        return player.server.getPlayerList().getPlayers().stream()
+                .anyMatch(other -> other != player && get(other) == role);
+    }
+
+    /**
+     * Picks a role for a player who doesn't have one yet: the host (whoever opened the world)
+     * becomes Chito, the friend who joins becomes Yuuri. On a dedicated server the first
+     * player to join is Chito. A third player gets no role and can pick one with H.
+     */
+    public static Role pickAutomaticRole(ServerPlayer player) {
+        boolean host = player.server.isSingleplayerOwner(player.getGameProfile());
+        boolean chitoFree = !isTaken(player, Role.CHITO);
+        boolean yuuriFree = !isTaken(player, Role.YUURI);
+        if (chitoFree && (host || player.server.isDedicatedServer())) {
+            return Role.CHITO;
+        }
+        if (yuuriFree && !host) {
+            return Role.YUURI;
+        }
+        if (chitoFree) {
+            return Role.CHITO;
+        }
+        return yuuriFree ? Role.YUURI : Role.NONE;
     }
 
     /** Sends this player's role to themselves and everyone who can see them. */

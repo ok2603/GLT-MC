@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "glt:block/rusted_plate"
+      },
+      {
+        "model": "glt:block/rusted_plate",
+        "y": 90
+      },
+      {
+        "model": "glt:block/rusted_plate",
+        "y": 180
+      },
+      {
+        "model": "glt:block/rusted_plate",
+        "y": 270
+      }
+    ]
+  }
+}
