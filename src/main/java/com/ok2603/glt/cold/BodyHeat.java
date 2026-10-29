@@ -5,6 +5,7 @@ import com.ok2603.glt.entity.KettenkradEntity;
 import com.ok2603.glt.network.BodyHeatPayload;
 import com.ok2603.glt.registry.ModAttachments;
 import com.ok2603.glt.registry.ModItems;
+import com.ok2603.glt.role.Roles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -141,7 +142,7 @@ public class BodyHeat {
         if (hasPlayerNearby(player)) {
             loss *= HUDDLE_FACTOR;
         }
-        return loss;
+        return loss * Roles.coldMultiplier(player);
     }
 
     private static float clothingProtection(Player player) {

@@ -21,6 +21,17 @@ A quiet survival mod inspired by the anime *Girls' Last Tour*: scavenge rations 
 
 All items are in the **Girls' Last Tour** creative tab.
 
+### Chito and Yuuri
+
+Press **H** to open the character menu and choose who you play as. Your player turns into that character (placeholder look for now), and you get their perks and cons. The key can be changed in Options → Controls.
+
+| | Chito, the thinker | Yuuri, the strong one |
+| --- | --- | --- |
+| Perks | Only one who can drive the Kettenkrad. Uses 25% less fuel | Breaks blocks 30% faster. Hits 30% harder. Gets cold 25% slower |
+| Cons | Breaks blocks 25% slower. Hits 30% softer. Gets cold 15% faster | Gets hungry faster. Can't drive |
+
+Standing next to each other slows the cold for both. All role numbers are at the top of `role/Roles.java`. Players who haven't picked a role play normally.
+
 ### The cold
 
 There are no monsters in the Overworld. Zombies, creepers, skeletons, phantoms, patrols and raids never appear on their own (spawn eggs, commands and monster spawners still work, and the Nether and End are unchanged). The danger is the cold instead.
@@ -63,5 +74,7 @@ To get a `.jar` you can drop into a normal NeoForge `mods` folder, run `./gradle
   - `entity/KettenkradEntity.java` — how the Kettenkrad drives, refuels and breaks
   - `cold/BodyHeat.java` — the body heat system (all the numbers are at the top)
   - `cold/NoMonsters.java` — stops monsters from spawning
-  - `client/` — the Kettenkrad's 3D model and the thermometer on screen
+  - `role/` — Chito and Yuuri's roles, perks and cons
+  - `client/` — the Kettenkrad's 3D model, the thermometer, the H menu, and Chito/Yuuri's look
+- `src/main/resources/assets/glt/textures/entity/player/` — Chito's and Yuuri's placeholder skins
 - `src/main/resources/assets/glt/` — textures, models and names (`lang/en_us.json`)
