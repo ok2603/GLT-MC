@@ -75,6 +75,10 @@ public class JournalTriggers {
             Journal.unlock(player, JournalMoment.STARS);
         }
 
+        if (player.getMainHandItem().is(ModItems.NUKO.get()) || player.getOffhandItem().is(ModItems.NUKO.get())) {
+            Journal.unlock(player, JournalMoment.NUKO_RADIO);
+        }
+
         if (pos.getY() >= HIGH_PLACE_HEIGHT && level.dimension() == Level.OVERWORLD) {
             Journal.unlock(player, JournalMoment.HIGH_PLACE);
         }

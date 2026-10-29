@@ -25,8 +25,8 @@ public class RoleSelectScreen extends Screen {
     private static final int GRAY = 0xA0A0A0;
 
     private static final String[] CHITO_PERKS = {"perk1", "perk2", "perk3", "perk4"};
-    private static final String[] CHITO_CONS = {"con1", "con2", "con3"};
-    private static final String[] YUURI_PERKS = {"perk1", "perk2", "perk3", "perk4", "perk5"};
+    private static final String[] CHITO_CONS = {"con1", "con2", "con3", "con4"};
+    private static final String[] YUURI_PERKS = {"perk1", "perk2", "perk3", "perk4", "perk5", "perk6"};
     private static final String[] YUURI_CONS = {"con1", "con2", "con3"};
 
     public RoleSelectScreen() {

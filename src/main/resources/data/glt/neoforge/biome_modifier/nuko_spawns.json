@@ -1,0 +1,10 @@
+{
+  "type": "neoforge:add_spawns",
+  "biomes": "#glt:has_nuko",
+  "spawners": {
+    "type": "glt:nuko",
+    "weight": 3,
+    "minCount": 1,
+    "maxCount": 1
+  }
+}

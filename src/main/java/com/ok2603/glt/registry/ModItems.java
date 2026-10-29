@@ -4,6 +4,9 @@ import com.ok2603.glt.GLTMod;
 import com.ok2603.glt.item.BeerItem;
 import com.ok2603.glt.item.ChitosJournalItem;
 import com.ok2603.glt.item.KettenkradItem;
+import com.ok2603.glt.item.NukoItem;
+import com.ok2603.glt.item.RifleItem;
+import net.neoforged.neoforge.common.DeferredSpawnEggItem;
 import com.ok2603.glt.item.OldNoteItem;
 import com.ok2603.glt.item.WarmFoodItem;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -71,6 +74,23 @@ public class ModItems {
     /** A note from the old world. Only Chito can read it. */
     public static final DeferredItem<OldNoteItem> OLD_NOTE = ITEMS.registerItem("old_note",
             OldNoteItem::new, new Item.Properties().stacksTo(1));
+
+    // --- Yuuri's rifle and Nuko ---
+
+    /** Yuuri's rifle. Only Yuuri can really aim it. */
+    public static final DeferredItem<RifleItem> YUURIS_RIFLE = ITEMS.registerItem("yuuris_rifle",
+            RifleItem::new, new Item.Properties().durability(250));
+
+    /** Ammunition for the rifle. Very rare. Nuko loves them. */
+    public static final DeferredItem<Item> RIFLE_CARTRIDGE = ITEMS.registerSimpleItem("rifle_cartridge",
+            new Item.Properties().stacksTo(16));
+
+    /** Nuko, held in your arms. */
+    public static final DeferredItem<NukoItem> NUKO = ITEMS.registerItem("nuko",
+            NukoItem::new, new Item.Properties().stacksTo(1));
+
+    public static final DeferredItem<DeferredSpawnEggItem> NUKO_SPAWN_EGG = ITEMS.register("nuko_spawn_egg",
+            () -> new DeferredSpawnEggItem(ModEntities.NUKO, 0xF4F1EA, 0x2B2B2B, new Item.Properties()));
 
     // --- Blocks found in ruins ---
 

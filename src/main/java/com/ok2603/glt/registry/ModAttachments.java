@@ -23,6 +23,10 @@ public class ModAttachments {
     public static final Supplier<AttachmentType<Boolean>> GOT_JOURNAL = ATTACHMENT_TYPES.register("got_journal",
             () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build());
 
+    /** Whether this player has already been given Yuuri's rifle. */
+    public static final Supplier<AttachmentType<Boolean>> GOT_RIFLE = ATTACHMENT_TYPES.register("got_rifle",
+            () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL).copyOnDeath().build());
+
     /** Whether the player is Chito or Yuuri. Kept when you die. */
     public static final Supplier<AttachmentType<Role>> ROLE = ATTACHMENT_TYPES.register("role",
             () -> AttachmentType.builder(() -> Role.NONE).serialize(Role.CODEC).copyOnDeath().build());

@@ -2,6 +2,7 @@ package com.ok2603.glt.registry;
 
 import com.ok2603.glt.GLTMod;
 import com.ok2603.glt.entity.KettenkradEntity;
+import com.ok2603.glt.entity.NukoEntity;
 import com.ok2603.glt.entity.SeatEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
@@ -20,6 +21,14 @@ public class ModEntities {
                     .sized(1.75f, 1.1f) // width and height of the hitbox, in blocks
                     .clientTrackingRange(10)
                     .build("kettenkrad"));
+
+    /** Nuko: small, white, harmless, eats ammo. */
+    public static final DeferredHolder<EntityType<?>, EntityType<NukoEntity>> NUKO =
+            ENTITY_TYPES.register("nuko", () -> EntityType.Builder
+                    .<NukoEntity>of(NukoEntity::new, MobCategory.CREATURE)
+                    .sized(0.5f, 0.5f)
+                    .clientTrackingRange(8)
+                    .build("nuko"));
 
     /** Invisible seat used when a player sits down with Z. */
     public static final DeferredHolder<EntityType<?>, EntityType<SeatEntity>> SEAT =
