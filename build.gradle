@@ -24,6 +24,11 @@ neoForge {
             server()
             programArgument '--nogui'
         }
+        // Starts a real server, runs the automatic tests in com.ok2603.glt.test, then stops.
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
         data {
             data()
             programArguments.addAll '--mod', project.mod_id, '--all',
