@@ -1,6 +1,8 @@
 package com.ok2603.glt.entity;
 
 import com.ok2603.glt.registry.ModItems;
+import com.ok2603.glt.role.Role;
+import com.ok2603.glt.role.Roles;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -27,7 +29,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * The Kettenkrad: Chito and Yuuri's half-track.
  *
- * - Right-click to get on. The first person drives, the second sits in the back.
+ * - Right-click to get on. The driver sits in front, the other rider in the back.
+ *   Only Chito (or a player without a role) can drive. Yuuri always rides.
  * - W/S to drive forward and back, A/D to turn. Shift to get off.
  * - It only drives while it has fuel. Right-click it with a Fuel Canister to refuel.
  * - Sneak + right-click shows how much fuel is left.
@@ -121,7 +124,13 @@ public class KettenkradEntity extends Entity {
         // Get on.
         if (!player.isPassenger() && canAddPassenger(player)) {
             if (!level().isClientSide) {
-                return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
+                if (!player.startRiding(this)) {
+                    return InteractionResult.PASS;
+                }
+                if (!Roles.canDrive(player)) {
+                    player.displayClientMessage(Component.translatable("message.glt.kettenkrad.cant_drive"), true);
+                }
+                return InteractionResult.CONSUME;
             }
             return InteractionResult.SUCCESS;
         }
@@ -133,18 +142,26 @@ public class KettenkradEntity extends Entity {
         return getPassengers().size() < 2;
     }
 
-    /** The first passenger is the driver. */
+    /** The driver is the first rider who is allowed to drive (Yuuri can't). */
     @Nullable
     @Override
     public LivingEntity getControllingPassenger() {
-        return getFirstPassenger() instanceof Player player ? player : null;
+        for (Entity passenger : getPassengers()) {
+            if (passenger instanceof Player player && Roles.canDrive(player)) {
+                return player;
+            }
+        }
+        return null;
     }
 
     /** Where each rider sits: driver in front, passenger in the back. */
     @Override
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float partialTick) {
-        int seat = Math.max(getPassengers().indexOf(passenger), 0);
-        double forward = seat == 0 ? 0.15 : -0.55;
+        LivingEntity driver = getControllingPassenger();
+        boolean frontSeat = driver != null
+                ? passenger == driver
+                : getPassengers().indexOf(passenger) <= 0;
+        double forward = frontSeat ? 0.15 : -0.55;
         return new Vec3(0.0, 0.8, forward).yRot(-getYRot() * Mth.DEG_TO_RAD);
     }
 
@@ -179,7 +196,11 @@ public class KettenkradEntity extends Entity {
         if (!level().isClientSide && getControllingPassenger() != null) {
             double movedX = getX() - xo;
             double movedZ = getZ() - zo;
-            if (movedX * movedX + movedZ * movedZ > 1.0e-4) {
+            // Chito knows how to drive gently, so she uses less fuel.
+            boolean chitoSaves = getControllingPassenger() instanceof Player driver
+                    && Roles.get(driver) == Role.CHITO
+                    && tickCount % Roles.CHITO_FUEL_SAVING == 0;
+            if (movedX * movedX + movedZ * movedZ > 1.0e-4 && !chitoSaves) {
                 setFuel(getFuel() - 1);
             }
         }

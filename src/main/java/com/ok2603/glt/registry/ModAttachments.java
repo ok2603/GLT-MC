@@ -3,6 +3,7 @@ package com.ok2603.glt.registry;
 import com.mojang.serialization.Codec;
 import com.ok2603.glt.GLTMod;
 import com.ok2603.glt.cold.BodyHeat;
+import com.ok2603.glt.role.Role;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -17,4 +18,8 @@ public class ModAttachments {
     /** How warm the player is, from 0 (frozen) to 100 (warm). Resets to full when you respawn. */
     public static final Supplier<AttachmentType<Float>> BODY_HEAT = ATTACHMENT_TYPES.register("body_heat",
             () -> AttachmentType.builder(() -> BodyHeat.MAX).serialize(Codec.FLOAT).build());
+
+    /** Whether the player is Chito or Yuuri. Kept when you die. */
+    public static final Supplier<AttachmentType<Role>> ROLE = ATTACHMENT_TYPES.register("role",
+            () -> AttachmentType.builder(() -> Role.NONE).serialize(Role.CODEC).copyOnDeath().build());
 }
