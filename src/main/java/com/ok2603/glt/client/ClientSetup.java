@@ -43,11 +43,13 @@ public class ClientSetup {
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.KETTENKRAD.get(), KettenkradRenderer::new);
         event.registerEntityRenderer(ModEntities.SEAT.get(), NoopRenderer::new); // the seat is invisible
+        event.registerEntityRenderer(ModEntities.NUKO.get(), NukoRenderer::new);
     }
 
     @SubscribeEvent
     public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(KettenkradModel.LAYER, KettenkradModel::createBodyLayer);
+        event.registerLayerDefinition(NukoModel.LAYER, NukoModel::createBodyLayer);
     }
 
     @SubscribeEvent

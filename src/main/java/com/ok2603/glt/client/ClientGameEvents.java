@@ -33,6 +33,7 @@ public class ClientGameEvents {
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
+        NukoRadio.tick(mc);
         while (ClientSetup.ROLE_MENU_KEY.consumeClick()) {
             if (mc.screen == null && mc.player != null) {
                 mc.setScreen(new RoleSelectScreen());

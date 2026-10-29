@@ -31,6 +31,9 @@ public class Roles {
     /** Extra Kettenkrad top speed for Chito, in blocks per tick (0.05 = 1 block per second). */
     public static final float CHITO_EXTRA_SPEED = 0.05f;
 
+    /** How far Chito's rifle shots go off target, in degrees. */
+    public static final float CHITO_RIFLE_SPREAD = 9.0f;
+
     // --- Yuuri ---
     public static final float YUURI_COLD_MULTIPLIER = 0.75f;   // gets cold 25% slower
     public static final double YUURI_MINING = 0.30;            // breaks blocks 30% faster
@@ -38,6 +41,13 @@ public class Roles {
     public static final float YUURI_EXTRA_HUNGER = 0.0025f;    // extra exhaustion per tick
     public static final float YUURI_ACCELERATION = 0.4f;       // speeds up the Kettenkrad at 40% of the normal rate
     public static final float YUURI_STEERING = 0.6f;           // turns the Kettenkrad at 60% of the normal rate
+    /** Cartridges Yuuri starts with. There aren't many more out there. */
+    public static final int STARTING_CARTRIDGES = 5;
+
+    /** How far Yuuri's rifle shots go off target, in degrees. */
+    public static final float YUURI_RIFLE_SPREAD = 0.4f;
+    /** Spread for players without a role. */
+    public static final float DEFAULT_RIFLE_SPREAD = 3.0f;
 
     private static final ResourceLocation MINING_ID = ResourceLocation.fromNamespaceAndPath(GLTMod.MODID, "role_mining");
     private static final ResourceLocation ATTACK_ID = ResourceLocation.fromNamespaceAndPath(GLTMod.MODID, "role_attack");
@@ -54,6 +64,21 @@ public class Roles {
         player.refreshDisplayName();
         player.refreshTabListName();
         giveJournalIfNeeded(player);
+        giveRifleIfNeeded(player);
+    }
+
+    /** The first time someone becomes Yuuri, she gets her rifle and a few cartridges. */
+    public static void giveRifleIfNeeded(ServerPlayer player) {
+        if (get(player) != Role.YUURI || player.getData(ModAttachments.GOT_RIFLE)) {
+            return;
+        }
+        player.setData(ModAttachments.GOT_RIFLE, true);
+        for (ItemStack stack : new ItemStack[]{new ItemStack(ModItems.YUURIS_RIFLE.get()),
+                new ItemStack(ModItems.RIFLE_CARTRIDGE.get(), STARTING_CARTRIDGES)}) {
+            if (!player.getInventory().add(stack)) {
+                player.drop(stack, false);
+            }
+        }
     }
 
     /** The first time someone becomes Chito, she gets her journal. */
@@ -115,6 +140,14 @@ public class Roles {
     /** How fast this driver can steer the Kettenkrad (1.0 = normal). */
     public static float steeringMultiplier(Player driver) {
         return get(driver) == Role.YUURI ? YUURI_STEERING : 1f;
+    }
+
+    public static float rifleSpread(Player player) {
+        return switch (get(player)) {
+            case CHITO -> CHITO_RIFLE_SPREAD;
+            case YUURI -> YUURI_RIFLE_SPREAD;
+            case NONE -> DEFAULT_RIFLE_SPREAD;
+        };
     }
 
     /** Repairing machines is Chito's job. If nobody is playing Chito, anyone can do it. */

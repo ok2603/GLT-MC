@@ -64,6 +64,11 @@
           "name": "glt:beer",
           "weight": 1,
           "quality": 1
+        },
+        {
+          "type": "minecraft:item",
+          "name": "glt:rifle_cartridge",
+          "weight": 1
         }
       ]
     }

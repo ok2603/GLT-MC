@@ -26,6 +26,10 @@ public enum JournalMoment {
     HUDDLE("huddle", true),
     STARS("stars", true),
     HIGH_PLACE("high_place", false),
+    // Nuko and the rifle
+    RIFLE("rifle", false),
+    NUKO("nuko", false),
+    NUKO_RADIO("nuko_radio", true),
     // Paper
     OLD_NOTE("old_note", false),
     BURN_BOOK("burn_book", false),

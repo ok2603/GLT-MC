@@ -1,0 +1,43 @@
+{
+  "rifle_shot": {
+    "subtitle": "subtitles.glt.rifle_shot",
+    "sounds": [
+      "glt:rifle_shot"
+    ]
+  },
+  "rifle_bolt": {
+    "subtitle": "subtitles.glt.rifle_bolt",
+    "sounds": [
+      "glt:rifle_bolt"
+    ]
+  },
+  "rifle_empty": {
+    "subtitle": "subtitles.glt.rifle_empty",
+    "sounds": [
+      "glt:rifle_empty"
+    ]
+  },
+  "nuko_ambient": {
+    "subtitle": "subtitles.glt.nuko_ambient",
+    "sounds": [
+      "glt:nuko_ambient1",
+      "glt:nuko_ambient2",
+      "glt:nuko_ambient3"
+    ]
+  },
+  "nuko_eat": {
+    "subtitle": "subtitles.glt.nuko_eat",
+    "sounds": [
+      "glt:nuko_eat"
+    ]
+  },
+  "nuko_radio": {
+    "subtitle": "subtitles.glt.nuko_radio",
+    "sounds": [
+      {
+        "name": "glt:nuko_radio",
+        "stream": true
+      }
+    ]
+  }
+}
