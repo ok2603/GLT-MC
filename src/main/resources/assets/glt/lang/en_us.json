@@ -69,5 +69,16 @@
   "note.glt.old_note.12": "\"Remember: never drink the water from the red pipes. The grey ones are warm and safe.\"",
   "note.glt.old_note.13": "\"Tank crews: hand in all chocolate rations at the depot. (Nobody ever does.)\"",
   "note.glt.old_note.14": "\"I wrote this so someone would know we were here.\"",
-  "note.glt.old_note.15": "\"The radio played music again tonight. Nobody knows where it comes from.\""
+  "note.glt.old_note.15": "\"The radio played music again tonight. Nobody knows where it comes from.\"",
+  "block.glt.bedroll": "Bedroll",
+  "container.glt.kettenkrad": "Kettenkrad",
+  "hud.glt.kettenkrad.storage": "Storage: Sneak + Right click",
+  "hud.glt.kettenkrad.status": "Fuel %s%% · Condition %s%%",
+  "hud.glt.kettenkrad.out_of_fuel": "Out of fuel. Yuuri can push it (W).",
+  "message.glt.kettenkrad.broken": "The Kettenkrad broke down. Chito can fix it with Scrap Parts.",
+  "message.glt.kettenkrad.cant_repair": "Yuuri has no idea how this works. Chito can fix it.",
+  "message.glt.kettenkrad.repaired": "Repaired. Condition: %s%%",
+  "message.glt.bedroll.no_room": "No room for the bedroll here.",
+  "message.glt.bedroll.cant_sleep_here": "This is no place to sleep.",
+  "message.glt.bedroll.slept_home": "Slept next to the Kettenkrad. Warm and rested."
 }

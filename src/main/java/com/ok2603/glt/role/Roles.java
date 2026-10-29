@@ -100,6 +100,24 @@ public class Roles {
         return get(driver) == Role.YUURI ? YUURI_STEERING : 1f;
     }
 
+    /** Repairing machines is Chito's job. If nobody is playing Chito, anyone can do it. */
+    public static boolean canRepair(Player player) {
+        return isOrMissing(player, Role.CHITO);
+    }
+
+    /** Only Yuuri is strong enough to push the Kettenkrad when the fuel runs out. */
+    public static boolean canPush(Player player) {
+        return isOrMissing(player, Role.YUURI);
+    }
+
+    /** True if the player has this role, or nobody in the world has it (so solo play still works). */
+    public static boolean isOrMissing(Player player, Role role) {
+        if (get(player) == role) {
+            return true;
+        }
+        return player.level().players().stream().noneMatch(other -> get(other) == role);
+    }
+
     public static float coldMultiplier(Player player) {
         return switch (get(player)) {
             case CHITO -> CHITO_COLD_MULTIPLIER;
