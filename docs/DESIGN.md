@@ -94,6 +94,20 @@ Legend: ✅ already merged · 🔨 planned, with the PR it lands in.
 - **Sky.** 4000 extra stars in the city, brighter the higher you are.
 - Config: `lastCity.elevatorNeedsFuel`, `lastCity.cityHeightCold`.
 
+## People (PR 7)
+
+- **Kanazawa** (plazas, floor 2 and up): give him any food, get a map centered on him with the nearest
+  elevator on that floor marked with a red X (coordinates in the tooltip). The first trade also gives his
+  camera. Three maps per Kanazawa. Limitation: vanilla maps draw the highest blocks, so in the city they
+  show the floor above as plain concrete; the X and the coordinates are what matter.
+- **Ishii** (rare airfield lots, floors 4 to 7): bring 8 Scrap Parts and a Fuel Canister. She takes off,
+  climbs, the engine sputters, the plane breaks apart, and she parachutes down. Where she lands she
+  leaves 6 rations, 2 fuel canisters and a chocolate.
+- **Old robots** wander pipe and factory lots. The fish farm keeper gives one fish a day; take more than
+  3 fish (killing or fishing) and it gets upset for 3 days, beeps and pushes you away from the pool.
+  It slowly restocks the pool.
+- Nobody can be hurt by players (this is a peaceful story).
+
 ## PR order
 
 1. **Scavenging**: config file, loot in vanilla and new crates, supply crate + wrecked tank blocks, scrap parts, old notes, beer, no-farming, auto roles, role loot bonuses.

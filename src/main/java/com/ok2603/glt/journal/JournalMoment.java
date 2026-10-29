@@ -42,6 +42,10 @@ public enum JournalMoment {
     ELEVATOR("elevator", true),
     NEW_FLOOR("new_floor", true),
     OLD_SIGN("old_sign", false),
+    // People
+    KANAZAWA("kanazawa", true),
+    ISHII_FLIGHT("ishii_flight", true),
+    ROBOT_FISH("robot_fish", false),
     // Paper
     OLD_NOTE("old_note", false),
     BURN_BOOK("burn_book", false),

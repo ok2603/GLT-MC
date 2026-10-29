@@ -16,6 +16,9 @@ public class ModEntityEvents {
     @SubscribeEvent
     public static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(ModEntities.NUKO.get(), NukoEntity.createAttributes().build());
+        event.put(ModEntities.KANAZAWA.get(), SurvivorEntity.createAttributes().build());
+        event.put(ModEntities.ISHII.get(), SurvivorEntity.createAttributes().build());
+        event.put(ModEntities.ROBOT.get(), RobotEntity.createAttributes().build());
     }
 
     /** Nuko can appear on any solid ground (the city has no grass). */
