@@ -27,6 +27,8 @@ public final class CityLayout {
     }
 
     private final long seed;
+    /** Elevator positions already worked out (they depend on the floors below, so this saves a lot of work). */
+    private final java.util.Map<Long, int[]> elevatorCache = new java.util.HashMap<>();
 
     public CityLayout(long seed) {
         this.seed = seed;
@@ -120,6 +122,17 @@ public final class CityLayout {
      * stair tower of the floor below, because those cells are where you arrive.
      */
     public int[] elevatorCellInRegion(int floor, int rx, int rz) {
+        long key = ((long) floor << 48) ^ ((long) (rx & 0xFFFFFF) << 24) ^ (rz & 0xFFFFFF);
+        int[] cached = elevatorCache.get(key);
+        if (cached != null) {
+            return cached;
+        }
+        int[] cell = findElevatorCell(floor, rx, rz);
+        elevatorCache.put(key, cell);
+        return cell;
+    }
+
+    private int[] findElevatorCell(int floor, int rx, int rz) {
         // The very first elevator is always close to where you start.
         if (rx == 0 && rz == 0 && floor == 0) {
             return new int[]{1, 1};
@@ -144,6 +157,14 @@ public final class CityLayout {
     /** True where something from floor k arrives on floor k + 1 (an elevator or stair tower). */
     private boolean arrivalCell(int floor, int cx, int cz) {
         return isElevatorCell(floor, cx, cz) || isStairsCell(floor, cx, cz);
+    }
+
+    public boolean isElevatorCell(int floor, int cx, int cz) {
+        if (floor < 0 || isTopFloor(floor)) {
+            return false;
+        }
+        int[] cell = elevatorCellInRegion(floor, Math.floorDiv(cx, REGION), Math.floorDiv(cz, REGION));
+        return cell[0] == cx && cell[1] == cz;
     }
 
     /** Spiral stair towers: a few per region, so you can climb without fuel (slowly). */
