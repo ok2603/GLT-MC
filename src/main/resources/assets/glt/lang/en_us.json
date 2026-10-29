@@ -8,5 +8,7 @@
   "item.glt.chitos_journal": "Chito's Journal",
   "item.glt.kettenkrad": "Kettenkrad",
   "entity.glt.kettenkrad": "Kettenkrad",
-  "message.glt.kettenkrad.fuel": "Fuel: %s%%"
+  "message.glt.kettenkrad.fuel": "Fuel: %s%%",
+  "item.glt.chitos_coat": "Chito's Coat",
+  "item.glt.yuuris_helmet": "Yuuri's Helmet"
 }

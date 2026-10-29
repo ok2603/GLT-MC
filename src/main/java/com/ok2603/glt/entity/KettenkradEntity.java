@@ -68,6 +68,11 @@ public class KettenkradEntity extends Entity {
         this.entityData.set(FUEL, Mth.clamp(fuel, 0, MAX_FUEL));
     }
 
+    /** The engine runs (and gives off heat) while someone is driving and there is fuel. */
+    public boolean isEngineRunning() {
+        return getFuel() > 0 && getControllingPassenger() != null;
+    }
+
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(FUEL, 0);
